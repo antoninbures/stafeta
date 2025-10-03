@@ -1,0 +1,235 @@
+
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+@{default $is_sider_menu => true}
+@{if $locked_for_unregistered_yn && !($templateOptions['col_left_menu_fixed'] || $templateOptions['cols_uni'] || ($isTopMenu && $type != 'order-shipment' && $type != 'order-checkout'))}
+	@{var $is_sider_menu false}
+@{/if}
+<header class="container container-n lrs bic-h the-h-1 header Header MenuOnTop Lazy bg-wh">
+
+<!-- Translation "alert-header" -->
+	{if !TextFieldsService::_empty('alert-header', $language_id) && !($type == 'order-shipment' || $type == 'order-checkout')}
+		<div class="alert alert-wa lr ta-c pt-2 pr-0 pb-2 pl-0 sh-sm fw-b ra-tl-0 ra-tr-0 ra-br-0 ra-bl-0 ft-none hdr-alert">
+			<div class="container cpx cnpx">
+				<div class="max text">{!_'alert-header'}</div>
+			</div>
+		</div>
+	{/if}
+	{include 'logo.phtml', bigger_height => true}
+	<!--
+		<div class="navbar navbar-sm lrs bic-htop ft-none the-h-1 b bg-wh d-none d-xl-flex hdr-top" role="navigation">
+			<span class="ov load bte-th"></span>
+			<nav class="container cpx cnpx">
+				<ul class="navbar-nav max d-flex ai-c">
+					<li class="flex-fill gap"></li>
+					{if count($languages) > 1 || $countries_show_selection_yn}
+						{include 'languages[layout_1].phtml' templateOptions => $templateOptions}
+					{/if}
+					{if $owner->email}
+						<li class="nav-item hdr-email"><a href="mailto:{$owner->email}" class="nav-link" title="{_'Email'}" rel="nofollow"><svg class="ic" data-toggle="tooltip" title="{$owner->email}" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#envelope"></use></svg></a></li>
+					{/if}
+					{if $owner->phone}
+						<li class="nav-item hdr-phn"><a href="tel:{$owner->phone|replace:' ':''}" class="nav-link" title="{_'Phone'}" rel="nofollow"><svg class="ic" data-toggle="tooltip" title="{$owner->phone}" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#phone"></use></svg><span>{$owner->phone}</span></a></li>
+					{/if}
+					{if !$locked_for_unregistered_yn}
+						{control contactMenu templateFile => '../menus/contact[1].phtml', maxLevelsCount => 2, templateOptions => $templateOptions}
+					{/if}
+					@{if !$locked_for_unregistered_yn && $allow_yn->customer}
+						<li class="nav-item hdr-cp">
+							@{default $compareClass => ''}
+							@{ifCurrent :Compare:view}
+								@{var $compareClass $compareClass.' active'}
+							@{/if}
+							@{if !$comparelist_count}
+								@{var $compareClass ' hidden'.$compareClass}
+							@{/if}
+							{snippetParams compareListCountAjax tag => 'a', href => _link($compare_link), title => translate('Go to compare list'), class => 'nav-link badge-mr navbar-compare HideNoContent mr-2'.$compareClass, rel => 'nofollow'}
+								{if $comparelist_count > 0}
+									<div class="RemoveHideNoContent hidden"></div>
+									<svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#scale-unbalanced-flip"></use></svg><span class="sr-only">{_'Go to compare list'}</span>
+									<span class="badge badge-sticker fg bg-de">{$comparelist_count}</span>
+								{/if}
+								{ifCurrent :Compare:view}
+									<span class="sr-only">({_'current'})</span>
+								{/if}
+							{/snippetParams}
+						</li>
+					@{/if}
+					@{if !$locked_for_unregistered_yn && $allow_yn->customer && $customer->loggedIn}
+						<li class="nav-item hdr-fp">
+							@{if $favourites_count}
+								@{var $favouriteListCountClass 'nav-link badge-mr navbar-favourite hdr-acc-fvrt'}
+								@{ifCurrent :Customer:favourites}
+									@{var $favouriteListCountClass $favouriteListCountClass.' active'}
+								@{/if}
+								{snippetParams favouriteListCountAjax1 tag => 'a', href => _link($favourites_link), title => translate('Go to favourites'), class => $favouriteListCountClass.' mr-2', rel => 'nofollow'}<svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#heart"></use></svg><span class="sr-only">{_'Go to favourites'}</span>{if $favourites_count}<span class="badge badge-sticker fg bg-de">{$favourites_count}</span>{/if}{ifCurrent :Customer:favourites}<span class="sr-only">({_'current'})</span>{/if}{/snippetParams}
+							@{/if}
+						</li>
+					@{/if}
+					@{if (!$locked_for_unregistered_yn && $allow_yn->customer && $customer->loggedIn) && ($customer->customer_discount && !($customer->customer_pricelist_id == 1 && $customer->customer_discount->percent == 0))}
+						<li class="nav-item hdr-dscnt"><a href="{link Customer:view}" class="nav-link navbar-discount{if isset($isProductList)} active{/if}" title="{_'Your discount'}" rel="nofollow"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#certificate"></use></svg><span class="sr-only">{_'Your discount'}</span><span n:if="isset($isProductList)" class="sr-only">({_'current'})</span>{if $customer->customer_discount->percent == 0}{_$customer->customer_discount->name}{else}{if $customer->customer_discount->percent > 0}{_'-'.$customer->customer_discount->percent.'%'}{else}{_$customer->customer_discount->percent.'%'}{/if}{/if}</a></li>
+					@{/if}
+					@{if !$locked_for_unregistered_yn && $allow_yn->customer && $customer->loggedIn}
+						<li class="nav-item dropdown{if $rating_and_reviews_yn && $account_info->productsNotRatedCount} badge-mr{/if} hdr-acc CustomerDropdown">
+							<a href="#" class="nav-link dropdown-toggle{ifCurrent :Customer:*} active{/if}" id="customerDropdown" title="{_'Your account'}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" rel="nofollow"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#user"></use></svg><span class="sr-only">{_'Your account'}</span>{$customer->firstname|striptags|truncate:1,''}{$customer->surname|striptags|truncate:1,''}<svg class="ic ic-sm caret"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#angle-down"></use></svg><span n:if="($rating_and_reviews_yn && $account_info->productsNotRatedCount)||($watchdog && $watched_count)" class="badge badge-sticker fg bg-de navbar-new accountCount">{$account_info->productsNotRatedCount + $watched_count}</span>{ifCurrent :Customer:*}<span class="sr-only">({_'current'})</span>{/if}</a>
+							@{include 'header-dropdown-account.phtml' templateProcessingToken => 'a8e74a0b2f6ac866820809daf63bbd58'}
+						</li>
+					@{elseif !$locked_for_unregistered_yn && $allow_yn->customer}
+						<li class="nav-item dropdown CustomerDropdown hdr-acc">
+							<a href="#" id="customerDropdown" class="nav-link dropdown-toggle{ifCurrent :Customer:*} active{/if}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" rel="nofollow"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#user"></use></svg>{_'Your account'}<svg class="ic ic-sm caret"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#angle-down"></use></svg>{ifCurrent :Customer:*}<span class="sr-only">({_'current'})</span>{/if}</a>
+							@{include 'header-dropdown-account.phtml' templateProcessingToken => '3bf72ab29a9ca65c2212092d631fc6fa'}
+						</li>
+					@{/if}
+				</ul>
+			</nav>
+		</div>
+	-->
+	<div class="navbar navbar-lg navbar-col lrs bic-hmain the-h-2 n-o-t-down ft-xl-none hdr-main MenuOnTop MenuOnTopTarget pb-xl-1 pt-5" role="navigation">
+
+		<div class="container cpx cnpx">
+			<div class="max ai-c d-flex">
+@{var $ihgtbxexpz_classUserCart 'dd-left ddRollFixed'}
+				@{var $ihgtbxexpz_logo_h1 false}
+				{block #ihgtbxexpz_contentSearch}
+					{default $show => false}
+					{if $show}
+						{default $search_collapse => false}
+						<span class="input-group-append input-group-append-ico">
+							{if $search_collapse}
+								<a href="#" class="btn fg bg-pr bov-wh-o-20 bgr-l1 sh-sm frmsearchForm-search" title="{_'Search'}" data-url="{link Search:Default phrase => 'placeholder'}"><svg class="ic d-sm-none" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#magnifying-glass"></use></svg><span class="d-none d-sm-inline">{_'Search'}</span></a>
+							{else}
+								<a href="#" class="btn fg bg-cl btn-sm pr-3 pl-3 frmsearchForm-search" title="{_'Search'}" data-url="{link Search:Default phrase => 'placeholder'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#magnifying-glass"></use></svg></a>
+							{/if}
+						</span>
+						<input{if isset($phrase) && $phrase} value="{$phrase}" {/if} class="form-control w-100 pr-6 frmsearchForm-phrase" type="search" name="phrase" placeholder="{if !TextFieldsService::_empty('search-input-text', $language_id)}{_'search-input-text'}{else}{_'Search'}{/if}" aria-label="{_'Search'}" data-products-header="{_'Products'}" data-categories-header="{_'Categories'}" data-articles-header="{_'Articles'}" data-products-url="{link Search:suggest}?type=products&amp;phrase=%QUERY" data-categories-url="{link Search:suggest}?type=categories&amp;phrase=%QUERY" data-articles-url="{link Search:suggest}?type=articles&amp;phrase=%QUERY" data-no_item="{_'No item'}" data-loading="{_'Loading'}" data-show_all="{_'Show all results'}">
+					{/if}
+				{/block}
+				<div class="navbar-brand ai-c d-flex d-xl-none">
+					{default $ihgtbxexpz_logo_h1 => true}
+					{include 'logo.phtml' logo_h1 => $ihgtbxexpz_logo_h1}
+				</div>
+				<div class="gap flex-fill d-none d-xl-block hdr-brand-gap"></div>
+<!-- Translation "textheader-logo" -->
+				{if !TextFieldsService::_empty('textheader-logo', $language_id)}
+					<div class="text mb-all-0 ta-l lh-sm c-mu ml-4 d-none d-lg-block ft-none hdr-logo-text mr-4">{!_'textheader-logo'}</div>
+				{/if}
+				<div class="gap flex-fill nav-h d-xl-none"></div>
+				<a n:if="!$locked_for_unregistered_yn" href="{if $templateOptions['cols_fixed']}#menuCollapse{else}#searchCollapse{/if}" id="SearchContainer" class="navbar-toggler search-toggle{if !$isTopMenu} top-menu-n{/if}{ifCurrent :Search:default} active{else} collapsed{/if} SrchBtn NoScroll d-xl-none" title="{_'Search'}" data-toggle="collapse" data-controls="searchCollapse" aria-expanded="{if $type == 'search'}true{else}false{/if}" rel="nofollow"><svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#magnifying-glass"></use></svg><span class="sr-only">{_'Search'}</span></a>
+				{if count($languages) > 1 || $countries_show_selection_yn}
+					{include 'languages[layout_2].phtml' templateOptions => $templateOptions}
+				{/if}
+				<a n:if="$owner->phone" href="tel:{$owner->phone|replace:' ':''}" class="navbar-toggler nt-phone NoScroll d-none d-md-inline-flex d-xl-none" title="{_'Phone'}"><svg class="ic fs-4" aria-hidden="true"{if $owner->phone} data-toggle="tooltip" title="{$owner->phone}"{/if}><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#phone"></use></svg></a>
+				<a n:if="$owner->email" href="mailto:{$owner->email}" class="navbar-toggler nt-email NoScroll d-none d-md-inline-flex d-xl-none" title="{_'Email'}"><svg class="ic fs-4" aria-hidden="true"{if $owner->email} data-toggle="tooltip" title="{$owner->email}"{/if}><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#envelope"></use></svg></a>
+				@{default $compareClass => ''}
+				@{ifCurrent :Compare:view}
+					@{var $compareClass ' active'}
+				@{/if}
+				@{if !$comparelist_count}
+					@{var $compareClass ' hidden'.$compareClass}
+				@{/if}
+				{snippetParams compareListCountAjax1 tag => 'a', href => _link($compare_link), class => 'navbar-toggler badge-mr nt-compare NoScroll HideNoContent d-none mr-2 d-sm-inline-flex d-xl-none'.$compareClass, title => translate('Go to compare list'), rel => 'nofollow'}
+					{if $comparelist_count > 0}
+						<div class="RemoveHideNoContent hidden"></div>
+						<svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#scale-unbalanced-flip"></use></svg><span class="sr-only">{_'Go to compare list'}</span>
+						<span class="badge badge-sticker fg bg-wh">
+							{$comparelist_count}
+						</span>
+					{/if}
+					{ifCurrent :Compare:view}<span class="sr-only">({_'current'})</span>{/if}
+				{/snippetParams}
+				@{if $cart_enable && !$locked_for_unregistered_yn}
+					@{default $snippetNameBasket => 'basketNavbarAjax'}
+					@{default $classUserCartToggle => 'dd-left ddRollFixed'}
+					{snippet $snippetNameBasket}
+						<div id="userCartDropdown2" class="dropdown user-cart-ico">
+							<a href="{link :Order:cart}" class="navbar-toggler dropdown-toggle ft-only-xl nt-cart-ico mr-2 mr-sm-3" title="{_'Go to Cart'}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" rel="nofollow"><svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#cart-shopping"></use></svg><span class="sr-only">{_'Go to Cart'}</span><span class="badge badge-sticker badge-toggle fg BasketTotalQuantity bg-de" title="{$basketTotalQuantity} {_'items', $basketTotalQuantity}">{$basketTotalQuantity}</span></a>
+							{include 'user-cart.phtml' isIcon => true, classUserCart => $classUserCartToggle, templateOptions => $templateOptions}
+						</div>
+					{/snippet}
+				@{/if}
+				{default $is_sider_menu => true}
+				{default $menu_toggle_hide_selected => false}
+				{if $is_sider_menu || !$menu_toggle_hide_selected}
+					{if !$locked_for_unregistered_yn}
+						<a href="#menuCollapse" class="navbar-toggler d-xl-none nt-menu hdr-menu-ico NoScroll" data-toggle="collapse" aria-controls="menuCollapse" aria-expanded="false" aria-label="{_'Open menu'}" rel="nofollow"><svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#bars"></use></svg><span class="sr-only">{_'Open menu'}</span></a>
+					{/if}
+				{/if}
+				{*
+				{default $is_search_clear => true}
+				{if $is_search_clear}
+					<div n:if="!$locked_for_unregistered_yn" class="input-group tt-full frmsearchForm-wrap w-100 max-w-xs max-w-xxl-sm d-none d-xl-block flex-fill hdr-srch" role="search">
+						{include #ihgtbxexpz_contentSearch, show => true}
+					</div>
+				{/if}
+				*}
+				@{if $cart_enable && !$locked_for_unregistered_yn}
+					{snippet basketTotalAjax}
+						<div id="userCartDropdown" class="btn-group sh-sm hdr-crt-group{if $basketTotalQuantity != 0} full{/if} ml-4 d-none d-xl-inline-flex" role="group" aria-label="{_'Go to Cart'}">
+							<a href="{link :Order:cart}" class="btn fg bov-wh-o-20 bgr-l1 pos-r bg-pr" title="{_'Go to Cart'}" rel="nofollow" role="button"><svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#cart-shopping"></use></svg><span class="sr-only">{_'Go to Cart'}</span> {$basketTotalPriceAfterProducts|formatOrderPrice}<span class="badge badge-sticker fg mt-n2 ml-n2 pos-r badge-cart BasketTotalQuantity bg-se" title="{$basketTotalQuantity} {_'items', $basketTotalQuantity}">{$basketTotalQuantity}</span></a>
+							<a href="#" class="btn dropdown-toggle dropdown-toggle-split fg bov-wh-o-20 bgr-l1 bg-pr" id="userCart" data-toggle="dropdown" rel="nofollow" role="button" aria-haspopup="true" aria-expanded="false"><svg class="ic ic-sm caret" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#angle-down"></use></svg><span class="sr-only">{_'Toggle Dropdown'}</span></a>
+							{include 'user-cart.phtml' classUserCart => $ihgtbxexpz_classUserCart, templateOptions => $templateOptions}
+						</div>
+					{/snippet}
+				@{/if}
+			</div>
+		</div>
+		{block #mxitefaqbz_contentSearch}
+			{default $show => false}
+			{if $show}
+				{default $search_collapse => false}
+				<span class="input-group-append input-group-append-ico">
+					{if $search_collapse}
+						<a href="#" class="btn fg bg-pr bov-wh-o-20 bgr-l1 sh-sm frmsearchForm-search" title="{_'Search'}" data-url="{link Search:Default phrase => 'placeholder'}"><svg class="ic d-sm-none" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#magnifying-glass"></use></svg><span class="d-none d-sm-inline">{_'Search'}</span></a>
+					{else}
+						<a href="#" class="btn fg bg-cl btn-sm pr-3 pl-3 frmsearchForm-search" title="{_'Search'}" data-url="{link Search:Default phrase => 'placeholder'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#magnifying-glass"></use></svg></a>
+					{/if}
+				</span>
+				<input{if isset($phrase) && $phrase} value="{$phrase}" {/if} class="form-control w-100 pr-6 frmsearchForm-phrase" type="search" name="phrase" placeholder="{if !TextFieldsService::_empty('search-input-text', $language_id)}{_'search-input-text'}{else}{_'Search'}{/if}" aria-label="{_'Search'}" data-products-header="{_'Products'}" data-categories-header="{_'Categories'}" data-articles-header="{_'Articles'}" data-products-url="{link Search:suggest}?type=products&amp;phrase=%QUERY" data-categories-url="{link Search:suggest}?type=categories&amp;phrase=%QUERY" data-articles-url="{link Search:suggest}?type=articles&amp;phrase=%QUERY" data-no_item="{_'No item'}" data-loading="{_'Loading'}" data-show_all="{_'Show all results'}">
+			{/if}
+		{/block}
+		{if !$locked_for_unregistered_yn}
+			<div id="searchCollapse" class="collapse container cpx cnpx zin-7 hdr-srch-collapse SearchShow{if !$isTopMenu} top-menu-n{/if}{if $type == 'search'} show{/if} d-xl-none" role="search" aria-expanded="{if $type == 'search'}true{else}false{/if}">
+				<div class="input-group max max-w-md ca-r mt-2 mb-2 mb-xl-4 tt-full hdr-srch frmsearchForm-wrap" role="search">
+					{include #mxitefaqbz_contentSearch, show => true, search_collapse => true}
+				</div>
+			</div>
+		{/if}
+	</div>
+	@{if $is_sider_menu}
+		<div class="navbar navbar-md lrs bic-hbot the-h-3 n-o-t-up b bg-wh bo-b-d {if !$isTopMenu}top-menu-n NoHdrBottomMenu{/if} hdr-bottom MenuOnTopTarget">
+			<div class="container cpx cnpx PriorBottomCont">
+				<div class="max ai-c d-flex">
+@{var $vispddevvf_snippetNameBasket 'basketFixedAjax'}
+					{if !TextFieldsService::_empty('fixed-navbar-home', $language_id)}
+						<a href="{href homepage}" class="navbar-toggler d-none d-xl-inline-flex ft-only-xl hdr-home-tgl" title="{_'Home'}">{!_'fixed-navbar-home'}</a>
+					{/if}
+					<nav id="menuCollapse" class="collapse navbar-collapse x-xl bg-wh {if !$isTopMenu}top-menu-n {/if}{if $left_into_top_yn}left-into-top {/if}SidebarIcons w-100" aria-expanded="false">
+						@{include '../menus/sidebar-icons.phtml' templateOptions => $templateOptions}
+						@{if !$locked_for_unregistered_yn}
+							@{control topLeftMenu templateFile => '../menus/top.phtml', maxLevelsCount => $left_into_top_yn ? 100 : 3, templateOptions => $templateOptions}
+						@{/if}
+						@{if $templateOptions['cols_uni'] && !$locked_for_unregistered_yn}
+							<div class="column col-uni d-xl-none ta-l mt-5 gapy-5">
+								@{include '../../layout/column[2].phtml' isSidebar => true, templateOptions => extend($templateOptions, ['col_left_menu' => false])}
+							</div>
+						@{/if}
+					</nav>
+					<a href="#menuCollapse" class="ov-page abs bg-bl fil-op-40 pos-f d-xl-none NoScroll" title="{_'Close menu'}" role="button" data-toggle="collapse" aria-controls="menuCollapse" aria-expanded="false" aria-label="{_'Close menu'}"></a>
+					@{if $cart_enable && !$locked_for_unregistered_yn}
+						@{default $vispddevvf_snippetNameBasket => 'basketNavbarAjax'}
+						@{default $classUserCartToggle => 'dd-left ddRollFixed'}
+						{snippet $vispddevvf_snippetNameBasket}
+							<div id="userCartDropdown2" class="dropdown user-cart-ico">
+								<a href="{link :Order:cart}" class="navbar-toggler dropdown-toggle ft-only-xl nt-cart-ico d-none d-xl-inline-flex" title="{_'Go to Cart'}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" rel="nofollow"><svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#cart-shopping"></use></svg><span class="sr-only">{_'Go to Cart'}</span><span class="badge badge-sticker badge-toggle fg BasketTotalQuantity bg-de d-none d-xl-inline-flex bov-wh-o-40 bgb-3" title="{$basketTotalQuantity} {_'items', $basketTotalQuantity}">{$basketTotalQuantity}</span></a>
+								{include 'user-cart.phtml' isIcon => true, classUserCart => $classUserCartToggle, templateOptions => $templateOptions}
+							</div>
+						{/snippet}
+					@{/if}
+				</div>
+			</div>
+		</div>
+	@{/if}
+</header>
