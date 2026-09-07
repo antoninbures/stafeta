@@ -1,0 +1,177 @@
+
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+<footer class="section lrs bic-f b bg-wh c-mu fse-y st-footer pt-6 pb-6">
+	<div class="container">
+		<div class="max gapy-5 flex-col d-flex">
+			{if !$locked_for_unregistered_yn}
+				{var $row_type ""}
+				{if !($type == 'order-shipment' || $type == 'order-checkout' || $type == 'order-recieved')}
+					{if $isBottomMenu}
+						{var $row_type "row"}
+					{else}
+						{var $row_type "block"}
+					{/if}
+				{/if}
+				{if !TextFieldsService::_empty('textfooter-1', $language_id)}
+					<div class="text textfooter-1">{!_'textfooter-1'}</div>
+					<hr class="hr textfooter-1-hr mt-0 mb-0">
+				{/if}
+				{if (!($type == 'order-shipment' || $type == 'order-checkout' || $type == 'order-recieved')) && ($owner->phone || $owner->email || count($social_networks))}
+					<nav class="fs-4 ta-c gapy-1 gapx-4 jc-c ai-c flex-wrap flex-col flex-lg-row d-flex ftr-row-2">
+						{if $owner->phone}
+							<div class="gapx-2 gapy-1 ai-c flex-col d-flex ftr-phone flex-lg-row"><a href="tel:{$owner->phone|replace:' ':''}" class="fg bg-de ico-sm d-none d-lg-inline-flex bov-wh-o-20 bgb-3" aria-label="{_'Phone'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#phone"></use></svg></a><a href="tel:{$owner->phone|replace:' ':''}" itemprop="telephone">{$owner->phone}</a></div>
+						{/if}
+						{if $owner->email}
+							<div class="gapx-2 gapy-1 ai-c flex-col d-flex ftr-email flex-lg-row"><a href="mailto:{$owner->email}" class="fg bg-de ico-sm d-none d-lg-inline-flex bov-wh-o-20 bgb-3" aria-label="{_'Email'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#envelope"></use></svg></a><a href="mailto:{$owner->email}" class="bw-y" itemprop="email">{$owner->email}</a></div>
+						{/if}
+						<div class="gap flex-fill d-none d-lg-block"></div>
+						<div class="d-flex ftr-soc mt-3 gapx-2 gapy-2 mt-lg-0">
+							{foreach $social_networks as $social_network}
+								{var $attr 'title="'.$social_network->name.'" '}
+								{if $social_network->link_url}
+									{var $attr $attr.'href="'.$social_network->link_url.'" target="_blank" rel="noopener"'}
+								{/if}
+								{var $class 'fg ftr-soc-item'}
+								{if !$social_network->link_url}
+									{var $class ' NoScroll'}
+								{/if}
+								{if $iterator->counter == 1}
+									<a {!$attr} class="bg-de {$class} ico-md bov-wh-o-20 bgb-3">
+										{block #ozauolcrne_content}
+											{if $social_network->image_yn}
+												<img src="{$social_network->src}" loading="lazy" class="img-fluid-2" alt="{$social_network->name}">
+											{elseif $social_network->icon_yn}
+												<i class="fa fa-{$social_network->icon}" aria-hidden="true"></i>
+											{/if}
+										{/block}
+									</a>
+								{elseif $iterator->counter == 2}
+									<a {!$attr} class="bg-de {$class} ico-md bov-wh-o-20 bgb-3">{include #ozauolcrne_content}</a>
+								{elseif $iterator->counter == 3}
+									<a {!$attr} class="bg-de {$class} ico-md bov-wh-o-20 bgb-3">{include #ozauolcrne_content}</a>
+								{elseif $iterator->counter == 4}
+									<a {!$attr} class="bg-de {$class} ico-md bov-wh-o-20 bgb-3">{include #ozauolcrne_content}</a>
+								{elseif $iterator->counter == 5}
+									<a {!$attr} class="bg-de {$class} ico-md bov-wh-o-20 bgb-3">{include #ozauolcrne_content}</a>
+								{elseif $iterator->counter == 6}
+									<a {!$attr} class="bg-de {$class} ico-md bov-wh-o-20 bgb-3">{include #ozauolcrne_content}</a>
+								{elseif $iterator->counter == 7}
+									<a {!$attr} class="bg-de {$class} ico-md bov-wh-o-20 bgb-3">{include #ozauolcrne_content}</a>
+								{else}
+									<a {!$attr} class="bg-de {$class} ico-md bov-wh-o-20 bgb-3">{include #ozauolcrne_content}</a>
+								{/if}
+							{/foreach}
+						</div>
+					</nav>
+				{/if}
+				{if (!($type == 'order-shipment' || $type == 'order-checkout' || $type == 'order-recieved')) && ($owner->phone || $owner->email || count($social_networks))}
+					<hr class="hr ftr-hr-2 mt-0 mb-0">
+				{/if}
+				{if $row_type == "row"}
+					<div class="row gy-5 ftr-row-1">
+						<aside class="col-lg-9 col-xl-7 ta-c ta-lg-l gapy-2 gapy-lg-1 flex-col d-flex ftr-col-right" itemscope itemtype="http://schema.org/LocalBusiness">
+							<meta n:if="$owner->company" itemprop="name" content="{$owner->company}"><meta n:if="!is_null($logoFileId)" itemprop="logo" content="{image $logoFileId}"><meta n:if="!is_null($logoFileId)" itemprop="image" content="{image $logoFileId}"><meta itemprop="priceRange" content="{if $currency_id == 'EUR' || $currency_id == 'USD'}$$$$${elseif $currency_id == 'HUF'}$$$$$$${else}$$$$$${/if}"><meta itemprop="url" content="{link //Category:homepage}"><meta n:if="$owner->phone" itemprop="telephone" content="{$owner->phone}">
+							<strong class="d-block tt-u mb-lg-1 ftr-adr-heading">{_'Contact us'}</strong>
+							{block #cmjaausdui_address_1}
+							{default $show => false}
+							{if $show}
+								<address class="gapx-2 gapy-1 ai-c ai-xl-s mb-1 flex-col d-flex ftr-adr-1 flex-lg-row ai-lg-s" itemprop="address" itemscope itemtype="http://schema.org/PostalAddress"><a href="{$owner->google_maps_search_url}" class="fg bg-de ico-sm bov-wh-o-20 bgb-3" target="_blank" rel="noopener" aria-label="{_'Address'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#location-dot"></use></svg></a><span>{if $owner->company}<span class="w-100 d-inline-block" itemprop="name">{$owner->company}</span>{/if}{if $owner->street}<span class="fs-2 d-inline-block" itemprop="streetAddress">{$owner->street}{if $owner->zip || $owner->state || $owner->country_id},&nbsp;{/if}</span>{/if}{if $owner->zip || $owner->city}<span class="fs-2 d-inline-block" itemprop="postalCode">{if $owner->zip}{$owner->zip}{/if}<span n:if="$owner->city" itemprop="addressLocality">{if $owner->zip}&nbsp;{elseif $owner->street && !$owner->zip},&nbsp;{/if}{$owner->city}</span></span>{if $owner->state || $owner->country_id},&nbsp;{/if}{/if}{if $owner->state}<span class="fs-2 d-inline-block" itemprop="addressRegion">{$owner->state}{if $owner->country_id},&nbsp;{/if}</span>{/if}{if $owner->country_name}<span class="fs-2 d-inline-block" itemprop="addressCountry" itemscope itemtype="http://schema.org/Country"><meta itemprop="name" content="{$owner->country_id|upper}">{$owner->country_name}</span>{/if}</span></address>
+							{/if}
+							{/block}
+							{block #cmjaausdui_address_2}
+							{default $show => false}
+							{if $show}
+								{if!TextFieldsService::_empty('second-address', $language_id)}
+									<address class="gapx-2 gapy-1 ai-c ai-xl-s mb-1 flex-col d-flex ftr-adr-2 flex-lg-row ai-lg-s"><a href="{$owner->google_maps_search_url_2}" class="fg bg-de ico-sm bov-wh-o-20 bgb-3" target="_blank" rel="noopener" aria-label="{_'Address'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#location-dot"></use></svg></a><div class="text mb-all-0">{!_'second-address'}</div></address>
+								{/if}
+							{/if}
+							{/block}
+							{block #cmjaausdui_opening_hours}
+							{default $show => false}
+							{if $show}
+								{if $owner->opening_hours}
+									<div class="gapx-2 gapy-1 ai-c flex-col d-flex ftr-opn flex-lg-row"><span class="fg bg-de ico-sm bov-wh-o-20 bgb-3"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#calendar"></use></svg></span><div class="text">{!$owner->opening_hours}</div></div>
+								{/if}
+							{/if}
+							{/block}
+							{include #cmjaausdui_address_1, show => true}
+							{include #cmjaausdui_address_2, show => true}
+							{include #cmjaausdui_opening_hours, show => true}
+							{if $owner->phone}
+								<div class="gapx-2 gapy-1 ai-c flex-col d-flex ftr-phone flex-lg-row"><a href="tel:{$owner->phone|replace:' ':''}" class="fg bg-de ico-sm d-none d-lg-inline-flex bov-wh-o-20 bgb-3" aria-label="{_'Phone'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#phone"></use></svg></a><a href="tel:{$owner->phone|replace:' ':''}" itemprop="telephone">{$owner->phone}</a></div>
+							{/if}
+							{if $owner->email}
+								<div class="gapx-2 gapy-1 ai-c flex-col d-flex ftr-email flex-lg-row"><a href="mailto:{$owner->email}" class="fg bg-de ico-sm d-none d-lg-inline-flex bov-wh-o-20 bgb-3" aria-label="{_'Email'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#envelope"></use></svg></a><a href="mailto:{$owner->email}" class="bw-y" itemprop="email">{$owner->email}</a></div>
+							{/if}
+							{if $writeus_active_yn}
+								<div id="WriteUs" class="gapx-2 gapy-1 ai-c flex-col d-flex ftr-quick-contact ContactModal flex-lg-row" data-toggle="modal" data-target=".contactUs" data-id="{_'Quick contact'}"><a href="#" class="fg bg-de ico-sm NoScroll bov-wh-o-20 bgb-3" aria-label="{_'Write us'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#paper-plane"></use></svg></a><a href="#" class="NoScroll">{_'Quick contact'}</a></div>
+							{/if}
+<!-- Translation "textfooter-3" -->
+							{if !TextFieldsService::_empty('textfooter-3', $language_id)}
+								<div class="cvr-iframe text ta-c ta-lg-l mt-1 mt-lg-2 ftr-text-3">{!_'textfooter-3'}</div>
+							{/if}
+						</aside>
+						{if $isBottomMenu}
+							<div class="col-lg-15 col-xl-17 ftr-col-left">
+								{control bottomMenu, templateFile => '../menus/bottom.phtml'}
+							</div>
+						{/if}
+					</div>
+				{/if}
+				{if $row_type == "block"}
+					<aside class="ta-c gapy-2 flex-col d-flex ftr-col-contacts" itemscope itemtype="http://schema.org/LocalBusiness">
+						<meta n:if="$owner->company" itemprop="name" content="{$owner->company}"><meta n:if="!is_null($logoFileId)" itemprop="logo" content="{image $logoFileId}"><meta n:if="!is_null($logoFileId)" itemprop="image" content="{image $logoFileId}"><meta itemprop="priceRange" content="{if $currency_id == 'EUR' || $currency_id == 'USD'}$$$$${elseif $currency_id == 'HUF'}$$$$$$${else}$$$$$${/if}"><meta itemprop="url" content="{link //Category:homepage}"><meta n:if="$owner->phone" itemprop="telephone" content="{$owner->phone}">
+						<strong class="d-block tt-u mb-lg-1 ftr-adr-heading">{_'Contact us'}</strong>
+						{block #idktynxrud_address_1}
+						{default $show => false}
+						{if $show}
+							<address class="gapx-2 gapy-1 ai-c mb-1 flex-col d-flex ftr-adr-1" itemprop="address" itemscope itemtype="http://schema.org/PostalAddress"><a href="{$owner->google_maps_search_url}" class="fg bg-de ico-sm bov-wh-o-20 bgb-3" target="_blank" rel="noopener" aria-label="{_'Address'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#location-dot"></use></svg></a><span>{if $owner->company}<span class="w-100 d-inline-block" itemprop="name">{$owner->company}</span>{/if}{if $owner->street}<span class="fs-2 d-inline-block" itemprop="streetAddress">{$owner->street}{if $owner->zip || $owner->state || $owner->country_id},&nbsp;{/if}</span>{/if}{if $owner->zip || $owner->city}<span class="fs-2 d-inline-block" itemprop="postalCode">{if $owner->zip}{$owner->zip}{/if}<span n:if="$owner->city" itemprop="addressLocality">{if $owner->zip}&nbsp;{elseif $owner->street && !$owner->zip},&nbsp;{/if}{$owner->city}</span></span>{if $owner->state || $owner->country_id},&nbsp;{/if}{/if}{if $owner->state}<span class="fs-2 d-inline-block" itemprop="addressRegion">{$owner->state}{if $owner->country_id},&nbsp;{/if}</span>{/if}{if $owner->country_name}<span class="fs-2 d-inline-block" itemprop="addressCountry" itemscope itemtype="http://schema.org/Country"><meta itemprop="name" content="{$owner->country_id|upper}">{$owner->country_name}</span>{/if}</span></address>
+						{/if}
+						{/block}
+						{block #idktynxrud_address_2}
+						{default $show => false}
+						{if $show}
+							{if!TextFieldsService::_empty('second-address', $language_id)}
+								<address class="gapx-2 gapy-1 ai-c mb-1 flex-col d-flex ftr-adr-2"><a href="{$owner->google_maps_search_url_2}" class="fg bg-de ico-sm bov-wh-o-20 bgb-3" target="_blank" rel="noopener" aria-label="{_'Address'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#location-dot"></use></svg></a><div class="text mb-all-0">{!_'second-address'}</div></address>
+							{/if}
+						{/if}
+						{/block}
+						{block #idktynxrud_opening_hours}
+						{default $show => false}
+						{if $show}
+							{if $owner->opening_hours}
+								<div class="gapx-2 gapy-1 ai-c flex-col d-flex ftr-opn"><span class="fg bg-de ico-sm bov-wh-o-20 bgb-3"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#calendar"></use></svg></span><div class="text">{!$owner->opening_hours}</div></div>
+							{/if}
+						{/if}
+						{/block}
+						{include #idktynxrud_address_1, show => true}
+						{include #idktynxrud_address_2, show => true}
+						{include #idktynxrud_opening_hours, show => true}
+						{if $writeus_active_yn}
+							<div id="WriteUs" class="gapx-2 gapy-1 ai-c flex-col d-flex ftr-quick-contact ContactModal" data-toggle="modal" data-target=".contactUs" data-id="{_'Quick contact'}"><a href="#" class="fg bg-de ico-sm NoScroll bov-wh-o-20 bgb-3" aria-label="{_'Write us'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#paper-plane"></use></svg></a><a href="#" class="NoScroll">{_'Quick contact'}</a></div>
+						{/if}
+<!-- Translation "textfooter-3" -->
+						{if !TextFieldsService::_empty('textfooter-3', $language_id)}
+							<div class="cvr-iframe text ta-c mt-1 mt-lg-2 ftr-text-3">{!_'textfooter-3'}</div>
+						{/if}
+					</aside>
+				{/if}
+				{if !($type == 'order-shipment' || $type == 'order-checkout' || $type == 'order-recieved')}
+					<hr class="hr ftr-hr-3 mt-0 mb-0">
+				{/if}
+				<div n:if="!is_null($payment_method_logos)" class="text mb-all-0 gapy-3 gapx-5 jc-c ai-c flex-wrap d-flex ftr-pay">{!$payment_method_logos}</div>
+				{if !TextFieldsService::_empty('textfooter-2', $language_id)}
+					<div class="text textfooter-2">{!_'textfooter-2'}</div>
+				{/if}
+				{control backlinks templateFile => 'backlinks.phtml', limit => 100}
+			{/if}
+			{var $actual_year $actual_time|date:'Y'}
+			{var $project_creation_year $project_creation_time|date:'Y'}
+			<div class="fs-2 copyr">&copy;{if $actual_year > $project_creation_year}<span class="copyr-from">{$project_creation_time|date:'Y'} - </span>{/if}{$actual_year}{if $owner->company}<span class="copyr-company"> {$owner->company}</span>{/if}<span class="copyr-admin">, <a href="https://{$project_name}.admin.upgates.com" target="_blank" rel="nofollow noopener">{_'admin'}</a></span>{if !$locked_for_unregistered_yn}<span class="tt-l copyr-sitemap">, <a href="{href sitemap}">{_'Site map'}</a></span><span class="copyr-rss">, <a href="{link Feed:rss}">{_'RSS'}</a></span>{/if}{if $cookies_agreement->active}<span class="tt-l copyr-cookies ContactModal" data-toggle="modal" data-target="#cookiesDialog" data-id="Cookies">, <a href="#" class="NoScroll">{_'Cookies settings'}</a></span>{/if}, {upgatecopyright}</div>
+		</div>
+	</div>
+</footer>

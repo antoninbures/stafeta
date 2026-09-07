@@ -1,0 +1,69 @@
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+@{extends '../@layout.phtml'}
+@{var $body_class $category->meta->body_class}
+@{var $hp_menu_number 2}
+@{if $top_into_left_yn}
+	@{var $hp_menu_number 1}
+@{/if}
+{block #conversionCodes}{!$category->meta->conversion_code}{/block}
+@{block #default}
+	{if $templateOptions['layout_version'] != 6 && $widgets['banner']->exists('banner1')}
+		{if $templateOptions['structure-banners-main'] === 6}
+			{include '../components/banners/main[layout_1]_6.phtml' templateOptions => $templateOptions}
+		{elseif $templateOptions['structure-banners-main'] === 4}
+			{include '../components/banners/main[layout_2]_4.phtml' templateOptions => $templateOptions}
+		{elseif $templateOptions['structure-banners-main'] === 3}
+			{include '../components/banners/main[layout_2]_3.phtml' templateOptions => $templateOptions}
+		{else}
+			{include '../components/banners/main[layout_2]_1.phtml' templateOptions => $templateOptions}
+		{/if}
+	{/if}
+	{control headlines templateFile => '../components/page/hp/headlines[layout_1].phtml', limit => 48, templateOptions => $templateOptions}
+	{if $widgets['topOfferProductsRecommand']->getCount() || $widgets['productsLabelsContainer']->exists() || $widgets['topOfferProductsTop']->getCount() || $widgets['lastVisitedProducts']->getCount()}
+		{include '../components/products/list/top-offer[layout_1].phtml' templateOptions => $templateOptions}
+	{/if}
+	{if $widgets['banner']->exists('cover_1')}
+		{include '../components/banners/cover-1.phtml', templateOptions => $templateOptions}
+	{/if}
+	{control hpMenu templateFile => '../components/page/hp/subcategories[1].phtml', rootCategoriesIds => [1, 2, 3], templateOptions => $templateOptions}
+	@{control products templateFile => '../components/products/list/products[2].phtml', templateOptions => extend($templateOptions, ['multiStocksActiveYn' => $multiStocksActiveYn])}
+	{control newsBox templateFile => '../components/news/list[layout_1].phtml', limit => 8, templateOptions => $templateOptions}
+	{if !TextFieldsService::_empty('page-text-hp', $language_id)}
+		{include '../components/page/top/text-translation[2].phtml' translation_key => 'hp'}
+	{elseif !TextFieldsService::_empty('hp-section', $language_id)}
+		{include '../components/page/top/text-translation[2].phtml' translation_key => 'hp-section', full_key => true}
+	{/if}
+	{include '../components/page/hp/text[layout_1].phtml' module => $category, templateOptions => $templateOptions}
+	{control backlinks templateFile => '../components/page/hp/partners[1].phtml', limit => 100, templateOptions => $templateOptions}
+	{if count($articles)}
+		{include '../components/articles/list[layout_3].phtml' articles => $articles, templateOptions => $templateOptions}
+	{/if}
+	{if count($category_files)}
+		{include '../components/page/other/downloads[3].phtml' files => $category_files, templateOptions => $templateOptions}
+	{/if}
+	{if count($category_images)}
+		{include '../components/page/other/gallery[layout_3].phtml' images => $category_images, templateOptions => $templateOptions}
+	{/if}
+	{if isset($category->product_id) || ($category->form_id != 'contactform' && $category->form_id != 'writeus')}
+		{control dynamicForm templateFile => '../components/page/other/dynamic-form[3].phtml', templateOptions => $templateOptions}
+	{/if}
+	{control advice templateFile => '../components/advice/list[3].phtml', templateOptions => $templateOptions}
+	{if isset($map)}
+		{include '../components/page/other/map[3].phtml' templateOptions => $templateOptions}
+	{/if}
+	{if ($widgets['contentContactForm']->isActive() && $category->form_id == "contactform") || $category->survey_id || ($widgets['comments']->isActive() && $category->comments_yn && $allow_yn->communication)}
+		{include '../components/marketing/marketing[3].phtml' module => $category, templateOptions => $templateOptions}
+	{/if}
+	{control newsletterForm templateFile => '../Newsletter/components/newsletter-form[1].phtml', templateOptions => $templateOptions}
+	<!-- Translation: pg-txt-widget -->
+	{if !TextFieldsService::_empty('page-text-widget', $language_id)}
+		{include '../components/page/other/widget[1].phtml' templateProcessingToken => '04f17a0c2b6d97796bc2a888b2cdfd11'}
+	{/if}
+	{if $widgets['banner']->exists('cover_2')}
+		{include '../components/banners/cover-2.phtml', templateOptions => $templateOptions}
+	{/if}
+@{/block}

@@ -1,0 +1,35 @@
+
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+{default $logo_h1 => true}
+{default $max_width => 400}
+{default $max_height => 51}
+{default $bigger_height => false}
+{if $bigger_height}
+	{var $max_height 77}
+{/if}
+{default $show => false}
+{block #content2}
+	{if $show}
+		{if is_null($logoFileId)}
+			{if strlen($logoText) > 13}
+				<span class="ws-n ff-adv lh-xs mb-0 logo-font longtext fs-xl-7">{$logoText}</span>
+			{else}
+				<span class="ws-n ff-adv lh-xs mb-0 logo-font">{$logoText}</span>
+			{/if}
+		{else}
+			{img $logoFileId max_width => $max_width, max_height => $max_height, class => 'img-fluid-2 logo-img', image_title => $seo->title}
+		{/if}
+	{/if}
+{/block}
+{if $bigger_height}
+	{block #content}
+		<a href="{href homepage}" class="navbar-brand c-inh c-inh td-n ca-l ai-c d-inline-flex pe-a hdr-logo-media" title="{_'Home'}">{include #content2, show => true}</a>
+		<h1 n:if="$logo_h1 && $homepage && isset($category) && isset($category->h1_under_logo_yn) && $category->h1_under_logo_yn" class="fs-0 pos-a">{$category->title}</h1>
+	{/block}
+{else}
+	{include #content}
+{/if}

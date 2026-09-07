@@ -1,0 +1,178 @@
+// Options
+$enable-radius:              true !default;
+$enable-rounded:             true !default;
+$enable-blur:                true !default;
+$enable-transitions:         true !default;
+$enable-animations:          true !default;
+$font-family-mobile-native:  false !default;
+$enable-required-outlined:   false !default;
+
+
+// Default values
+$is-top-alert-hidden:       false !default;
+$form-control-pr-designer:  null !default;
+$form-control-se-designer:  null !default;
+$popover-color-designer:    null !default;
+$popover-bg-designer:       null !default;
+$tooltip-color-designer:    null !default;
+$tooltip-bg-designer:       null !default;
+
+
+// Structures
+$structure-layout: 2 !default;
+$structure-articles: 1 !default;
+$structure-banners-main: 1 !default;
+$structure-filters: 4 !default;
+$structure-footer: 2 !default;
+$structure-header: 4 !default;
+$structure-logo: 1 !default;
+$structure-languages: 1 !default;
+$structure-headlines: 4 !default;
+$structure-left-menu: 1 !default;
+$structure-top-menu: 2 !default;
+$structure-news-box: 2 !default;
+$structure-gallery: 1 !default;
+$structure-subcategories: 2 !default;
+$structure-page-text-hp: 1 !default;
+$structure-why-us-box: 1 !default;
+$structure-breadcrumb: 1 !default;
+$structure-product-detail-bottom: 1 !default;
+$structure-product-detail-top: 2 !default;
+$structure-labels: 4 !default;
+$structure-products-item: 1 !default;
+$structure-products-list: 3 !default;
+$structure-products-mobile: 1 !default;
+$structure-products-top-category: 1 !default;
+$structure-top-offer: 2 !default;
+
+
+// Variants
+$variant-body:     colored !default;
+$variant-section:  colored !default;
+
+
+// COLOR SYSTEM
+
+$brand-primary:    #274249 !default;
+$brand-secondary:  #0046FA !default;
+
+$brand-red:        #dc3545 !default;
+$brand-yellow:     #ffc107 !default;
+$brand-green:      #1abc9c !default;
+$brand-cyan:       #17a2b8 !default;
+
+
+// Color helpers
+
+$primary-saturation-designer:    29 !default;
+$primary-lightness-designer:     94 !default;
+$secondary-saturation-designer:  94 !default;
+$secondary-lightness-designer:   94 !default;
+
+
+// Text & content align
+
+$text-align-base:     center !default;
+$content-align-base:  center !default;
+
+
+// Spacers
+
+$condensed:  2 !default;
+
+
+// Line height
+
+$line-height-base: 1.55 !default;
+
+
+// Border
+
+$border-size-base:  1px !default;
+$border-style:      solid !default;
+$border-darkening:  4% !default;
+
+
+// Fonts
+
+$font-family-advanced:  'Roboto', sans-serif !default;
+$font-family-base:      'Roboto', sans-serif !default;
+
+
+// Font size
+
+$font-size-base:  0.9375rem !default; // 16px
+
+
+// Font weight
+
+$font-weight-base:          400 !default; // body
+$font-weight-heading-base:  900 !default; // h1, h2, h3, h4, h5, h6...
+
+
+// Letter spacing
+
+$letter-spacing-base:          0 !default;
+$letter-spacing-heading-base:  -0.04em !default;
+
+
+// Headings
+
+$scale-factor:  1.45 !default;
+
+
+// Theme
+
+$theme:                      "10" !default;
+$theme-banner-main-texture:  "10" !default;
+$theme-texture:              "/images/textures/#{$theme}.svg?pons" !default;  //.bi
+$theme-texture-cover:        "/images/textures/#{$theme-banner-main-texture}.svg?fl9y" !default;  //.th-cover .bte-th
+
+// Background images - custom
+// .bic-xxx
+
+$bg-images-custom: (
+	"bic-b":         url(),
+	"bic-w":         url(),
+	"bic-p":         url(),
+	"bic-h":         url(),
+	"bic-htop":      url(),
+	"bic-hmain":     url(),
+	"bic-hbot":      url(),
+	"bic-bnr":       url(),
+	"bic-bnr-sl":    url(),
+	"bic-bnr-sl-1":  url(),
+	"bic-bnr-sl-2":  url(),
+	"bic-bnr-sl-3":  url(),
+	"bic-bnr-sl-4":  url(),
+	"bic-bnr-sl-5":  url(),
+	"bic-hdln":      url(),
+	"bic-topoffer":  url(),
+	"bic-bnr-cvr1":  url(),
+	"bic-last":      url(),
+	"bic-nl":        url(),
+	"bic-nws":       url(),
+	"bic-hp":        url(),
+	"bic-hpmenu":    url(),
+	"bic-hptrans":   url(),
+	"bic-hptxt":     url(),
+	"bic-prtnr":     url(),
+	"bic-prcs":      url(),
+	"bic-artcl":     url(),
+	"bic-dwnld":     url(),
+	"bic-glr":       url(),
+	"bic-df":        url(),
+	"bic-adv":       url(),
+	"bic-map":       url(),
+	"bic-mkt":       url(),
+	"bic-fhead":     url(),
+	"bic-fnl":       url(),
+	"bic-wdgt":      url(),
+	"bic-bnr-cvr2":  url(),
+	"bic-f":         url(),
+	"bic-demo":      url()
+) !default;
+
+
+
+

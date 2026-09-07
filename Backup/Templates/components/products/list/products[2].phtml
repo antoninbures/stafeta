@@ -1,0 +1,22 @@
+
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+@{if !$homepage || ($homepage && $productCount > 0)}
+	<div class="section lrs bic-prcs bg-wh anim p-l-cont{if !$homepage} p-l-tabs{/if} d-flex gapy-5 pb-6">
+		{snippetParams productList class => 'container'}
+			<div class="max">
+				<h2 n:if="$homepage" class="ph-box anim-i anim-fade x b bg-wh hlt">{_'Don\'t miss it!'}
+				</h2>
+				{include 'list[layout_4].phtml' templateProcessingToken => '4fd8fece06b0542ced2644c62b6979d2'}
+			</div>
+		{/snippetParams}
+		@{if isset($paginator)}
+			{snippetParams paging2 class => 'container PagingWrap'}
+				{control paginator templateFile => '../paging[1].phtml', templateOptions => $templateOptions}
+			{/snippetParams}
+		@{/if}
+	</div>
+@{/if}

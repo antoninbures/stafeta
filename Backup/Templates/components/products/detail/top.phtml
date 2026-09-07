@@ -1,0 +1,437 @@
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+<div class="section x bg-wh lrs ProductTop">
+	<div class="container">
+		<div class="max max-w-xxl">
+			<div class="row gy-4">
+				<div class="col">{control breadcrumbs templateFile => 'breadcrumb[layout_1].phtml', templateOptions => $templateOptions}</div>
+			</div>
+		</div>
+		<div class="max max-w-xxl">
+			<div class="row gy-4">
+				<div class="col-lg-12 pd-photos col-xxl-14">
+					<div class="gapy-4 flex-col d-flex pos-sy pd-photos-sticky">
+						
+						@{if $rating_and_reviews_yn}
+							@{include 'rating[1].phtml' templateOptions => $templateOptions}
+						@{/if}
+						@{include 'top-photo[2].phtml' module => $product}
+						@{include 'top-photo-others[2].phtml' module => $product}
+						{include 'help[1].phtml' meta => $product->meta->support}
+						@{if isset($product->meta->product_text1) && $product->meta->product_text1}
+							{snippetParams productText1Ajax class => 'text x b bg-wh product_text1'}{if isset($product->meta->product_text1) && $product->meta->product_text1}{!$product->meta->product_text1}{/if}
+							{/snippetParams}
+						@{/if}
+					</div>
+				</div>
+				<div class="col-lg-12 ta-lg-l gapy-4 flex-col d-flex pd-info col-xxl-10">
+					{include '../../page/top/header[7].phtml' product => $product, headerText => $product->info->title_short, isContainer => false, templateOptions => extend($templateOptions, ['microdata' => false])}
+					@{default $manufacturer_link => true}
+					@{default $module_filter => null}
+					@{default $options => null}
+					@{default $module => $product ?? $productInfoBox}
+					@{default $module_info => $module->info ?? null}
+					@{if !$module_filter}
+						@{if isset($module_info->manufacturer_filter_url)}
+							@{var $module_filter $module_info->manufacturer_filter_url}
+						@{elseif isset($module_info->manufacturer_url)}
+							@{var $module_filter $module_info->manufacturer_url}
+						@{/if}
+					@{/if}
+					<div n:if="$module_info->short_description || $module_info->manufacturer_file_id" itemprop="disambiguatingDescription" class="text underline x b bg-wh pd-shrt-desc">
+						{if $module_info->short_description}
+							{!$module_info->short_description|nl2br}
+							<a n:if="$module_info->short_description && $module_info->description" href="#" data-scroll-id="description" class="icon-text" rel="nofollow">{_'More'}<svg class="ic ic-sm" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#angles-right"></use></svg></a>
+						{/if}
+					</div>
+					@{default $manufacturer_link => true}
+					@{default $module_filter => null}
+					@{default $options => null}
+					@{default $module => $product ?? $productInfoBox}
+					@{default $module_info => $module->info ?? null}
+					@{if !$module_filter}
+						@{if isset($module_info->manufacturer_filter_url)}
+							@{var $module_filter $module_info->manufacturer_filter_url}
+						@{elseif isset($module_info->manufacturer_url)}
+							@{var $module_filter $module_info->manufacturer_url}
+						@{/if}
+					@{/if}
+					@{if isset($module->meta->product_text2) && $module->meta->product_text2}
+						{snippetParams productText2Ajax class => 'text b product_text2 pt-3 pr-3 pl-3 pb-3 bg-se ra-tl-2 ra-bl-2 ra-tr-2 ra-br-2'}{!$module->meta->product_text2}{/snippetParams}
+					@{/if}
+					@{include '../benefits[2].phtml' templateProcessingToken => 'b8d32b5c8b8d779745ec953e248053b1'}
+					@{default $manufacturer_link => true}
+					@{default $module_filter => null}
+					@{default $options => null}
+					@{default $module => $product ?? $productInfoBox}
+					@{default $module_info => $module->info ?? null}
+					@{if !$module_filter}
+						@{if isset($module_info->manufacturer_filter_url)}
+							@{var $module_filter $module_info->manufacturer_filter_url}
+						@{elseif isset($module_info->manufacturer_url)}
+							@{var $module_filter $module_info->manufacturer_url}
+						@{/if}
+					@{/if}
+					@{if isset($module->meta->product_text3) && $module->meta->product_text3}
+						{snippetParams productText3Ajax class => 'text x b bg-wh product_text3'}{!$module->meta->product_text3}{/snippetParams}
+					@{/if}
+					@{if !(isset($product->info->archived_yn) && $product->info->archived_yn)}
+						@{include 'top-order[2].phtml' templateProcessingToken => '40b18e6e385af5e8a05d6070ba4574ee'}
+					@{/if}
+					@{include '../labels[layout_5].phtml' quickInfo => false, is_snippet => true}
+					@{if $table_variants && $product->info->option_set_exist_yn}
+							@{default $manufacturer_link => true}
+							@{default $module_filter => null}
+							@{default $options => null}
+							@{default $module => $product ?? $productInfoBox}
+							@{default $module_info => $module->info ?? null}
+							@{if !$module_filter}
+								@{if isset($module_info->manufacturer_filter_url)}
+									@{var $module_filter $module_info->manufacturer_filter_url}
+								@{elseif isset($module_info->manufacturer_url)}
+									@{var $module_filter $module_info->manufacturer_url}
+								@{/if}
+							@{/if}
+							@{default $part_measure_presenter => ($show_price_per_measure_unit_yn && $product->info->unit_show_measure_quantity_yn && $product->info->unit_measure_quantity && $product->info->measure_unit_name && (!(isset($noVariant) && $noVariant) || !$options))}
+							@{default $part_manufacturer_presenter => ($module_info->manufacturer && !(isset($module_info->manufacturer_file_id) && $module_info->manufacturer_file_id))}
+							@{default $part_weight_presenter => ($show_weight_yn && $module_info->weight && $module_info->weight > 1)}
+							@{default $part_shipping_presenter => (!TextFieldsService::_empty('shipping-link', $language_id))}
+							@{if $part_measure_presenter || $part_manufacturer_presenter || $module_info->code || $module_info->ean || $part_weight_presenter || $part_shipping_presenter}
+								{block #qyqlvonmax_additionalDescription}
+									{default $show => false}
+									{if $show}
+										<span n:if="$part_measure_presenter" class="pr-2 measure"><small class="fs-2 c-mu pd-mf-name">{_'Package'}:</small> {$module_info->unit_measure_quantity} {$module_info->measure_unit_name}</span>
+										<span n:if="$part_manufacturer_presenter" class="pr-2 pd-mf-name"><small class="fs-2 c-mu">{_'Manufacturer'}:</small> <a href="{if $manufacturer_link}{$module_filter}{else}#{/if}" class="desc-info{if !$manufacturer_link} a-no NoScroll{/if}">{$module_info->manufacturer}</a></span>
+										<span n:if="$part_weight_presenter" class="pr-2 weight"><small class="fs-2 c-mu">{_'Weight'}:</small> {!$module_info->weight/1000} kg</span>
+										<span n:if="$part_shipping_presenter" class="shipping">{!_'shipping-link'}</span>
+									{/if}
+								{/block}
+								{snippetParams codeAjax class => 'x b bg-wh gapx-2 jc-c jc-lg-s flex-wrap d-flex pd-dsc-additional'}
+									{include #qyqlvonmax_additionalDescription show => true}
+								{/snippetParams}
+							@{/if}
+							@{default $manufacturer_link => true}
+							@{default $module_filter => null}
+							@{default $options => null}
+							@{default $module => $product ?? $productInfoBox}
+							@{default $module_info => $module->info ?? null}
+							@{if !$module_filter}
+								@{if isset($module_info->manufacturer_filter_url)}
+									@{var $module_filter $module_info->manufacturer_filter_url}
+								@{elseif isset($module_info->manufacturer_url)}
+									@{var $module_filter $module_info->manufacturer_url}
+								@{/if}
+							@{/if}
+							@{if !is_null($module_info->form_id) && !$module_info->can_add_to_basket_yn && $module->prices->price_with_vat == 0}
+								@{if !TextFieldsService::_empty('demand-price', $language_id)}
+									{snippetParams pricesAjax1 class => 'text mb-all-0 pd-prices price-demand', itemprop => 'offers', itemscope => true, itemtype => 'http://schema.org/Offer'}{!_'demand-price'}{include #hwdwjffttd_availabilityMetaContent show => true}{/snippetParams}
+								@{/if}
+								<!-- Translation "demand-price" -->
+							@{elseif $show_prices && !(isset($module->info->archived_yn) && $module->info->archived_yn)}
+								{block #hwdwjffttd_pricesContent}
+									{default $show => false}
+									{if $show}
+										<meta n:if="isset($module->labels[2])" itemprop="itemCondition" content="http://schema.org/NewCondition"><meta itemprop="url" content="{link //this}">
+										{var $hwdwjffttd_mainPrice null}
+										{var $hwdwjffttd_defaultPrice null}
+										{var $showFromPrice false}
+										{if $module_info->option_set_exist_yn && $module->minPrices && isset($module->roundedMinPrices) && !isset($module->option_set_id)}
+											{var $module->prices $module->minPrices}
+											{var $module->roundedPrices $module->roundedMinPrices}
+											{var $showFromPrice true}
+										{/if}
+										{if $customer->show_with_vat_yn && !$customer->vat_removed_yn}
+											{var $hwdwjffttd_mainPrice $module->prices->price_with_vat}
+										{if isset($module->default_prices)}
+											{var $hwdwjffttd_defaultPrice $module->default_prices->price_with_vat}
+										{/if}
+										{else}
+											{var $hwdwjffttd_mainPrice $module->prices->price_without_vat}
+											{if isset($module->default_prices)}
+											{var $hwdwjffttd_defaultPrice $module->default_prices->price_without_vat}
+										{/if}
+										{/if}
+											{var $show_unregistered_price false}
+										{if $show_price_in_default_pricelist_for_logged_in_yn && $hwdwjffttd_defaultPrice && ($hwdwjffttd_defaultPrice != $hwdwjffttd_mainPrice)}
+											{var $show_unregistered_price true}
+										{/if}
+										{if $module->roundedPrices->price_with_vat != $module->roundedPrices->original_price_with_vat || $module->roundedPrices->price_with_vat != $module->roundedPrices->common_price_with_vat}
+											{if $customer->show_with_vat_yn && !$customer->vat_removed_yn}
+												{if $module->roundedPrices->common_price_with_vat > $module->roundedPrices->price_with_vat && $module->roundedPrices->common_price_with_vat >= $module->roundedPrices->original_price_with_vat}
+													<small class="fs-2 price-standard-label">{_'Standard price'}</small> <strong class="price-standard">{$module->roundedPrices->common_price_with_vat|formatPrice}</strong><small class="fs-2 price-standard-label">.</small>
+												{/if}
+												{if $module->roundedPrices->original_price_with_vat > $module->roundedPrices->price_with_vat && $module->roundedPrices->original_price_with_vat > $module->roundedPrices->common_price_with_vat}
+													<small class="fs-2 price-common-label">{_'Original price'}</small> <strong class="price-common">{$module->roundedPrices->original_price_with_vat|formatPrice}</strong><small class="fs-2 price-common-label">.</small>
+												{/if}
+											{else}
+												{if $module->roundedPrices->common_price_without_vat > $module->roundedPrices->price_without_vat && $module->roundedPrices->common_price_without_vat >= $module->roundedPrices->original_price_without_vat}
+													<small class="fs-2 price-standard-label">{_'Standard price'}</small> <strong class="price-standard">{$module->roundedPrices->common_price_without_vat|formatPrice}</strong><small class>{!_'excl. VAT'}</small><small class="fs-2 price-standard-label">.</small>
+												{/if}
+												{if $module->roundedPrices->original_price_without_vat > $module->roundedPrices->price_without_vat && $module->roundedPrices->original_price_without_vat > $module->roundedPrices->common_price_without_vat}
+													<small class="fs-2 price-common-label">{_'Original price'}</small> <strong class="price-common">{$module->roundedPrices->original_price_without_vat|formatPrice}</strong><small class>{!_'excl. VAT'}</small><small class="fs-2 price-common-label">.</small>
+												{/if}
+											{/if}
+										{/if}
+										{if $module->roundedPrices->common_price_save || $module->roundedPrices->original_price_save}
+											<small class="fs-2 price-save-label">{_'Save2'}</small>
+											{if $customer->show_with_vat_yn && !$customer->vat_removed_yn}
+												{if $module->roundedPrices->common_price_save > $module->roundedPrices->original_price_save}<strong class="price-save">{$module->prices->common_price_save_percent}&nbsp;%</strong><small class="ws-n price-small">({$module->roundedPrices->common_price_save|formatPrice})</small>{elseif $module->roundedPrices->common_price_save < $module->roundedPrices->original_price_save}<strong>{$module->prices->original_price_save_percent}&nbsp;%</strong><small class="ws-n price-small">({$module->roundedPrices->original_price_save|formatPrice})</small>{else}<strong>{$module->prices->original_price_save_percent}&nbsp;%</strong><small class="ws-n price-small">({$module->roundedPrices->original_price_save|formatPrice})</small>{/if}<small class="fs-2 price-save-label">.</small>
+											{else}
+												{if $module->roundedPrices->common_price_save_without_vat > $module->roundedPrices->original_price_save_without_vat}<strong>{$module->prices->common_price_save_percent}&nbsp;%</strong><small class="ws-n price-small">({$module->roundedPrices->common_price_save_without_vat|formatPrice} {!_'excl. VAT'})</small>{elseif $module->roundedPrices->common_price_save_without_vat < $module->roundedPrices->original_price_save_without_vat}<strong>{$module->prices->original_price_save_percent}&nbsp;%</strong><small class="ws-n price-small">({$module->roundedPrices->original_price_save_without_vat|formatPrice} {!_'excl. VAT'})</small>{else}<strong>{$module->prices->original_price_save_percent}&nbsp;%</strong><small class="ws-n price-small">({$module->roundedPrices->original_price_save_without_vat|formatPrice} {!_'excl. VAT'})</small>{/if}{if $show_unregistered_price}<small class="fs-2 price-save-label">.</small>{/if}
+											{/if}
+										{/if}
+										{if $show_unregistered_price}
+											<small class="fs-2 fs-2 price-unreg-label">{_'Unregistered customer'}</small> <strong class="price-unreg">{$hwdwjffttd_defaultPrice|formatPrice}<small n:if="!$customer->show_with_vat_yn || $customer->vat_removed_yn" class="ws-n price-small">{!_'excl. VAT'}</small></strong><small class="fs-2 price-unreg-label">.</small>
+										{/if}
+										<div>
+											{if $customer->show_with_vat_yn && !$customer->vat_removed_yn}
+												<strong class="ws-n fs-6 price-main">
+													{block #hwdwjffttd_contentPriceBefore}
+														<span n:if="$showFromPrice" class="fse-y ws-n price-from">{_'from'}</span>
+													{/block}
+													{$hwdwjffttd_mainPrice|formatPrice}
+													{block #hwdwjffttd_contentPricePerUnit}
+														<span n:if="$show_price_per_measure_unit_yn && $module->pricesPerUnit && !empty($module->pricesPerUnit->prices) && (!(isset($noVariant) && $noVariant) || !$options)" class="fse-y fw-r price-unit">({if $customer->show_with_vat_yn}{$module->pricesPerUnit->roundedPrices->price_with_vat|formatPrice}{else}{$module->pricesPerUnit->roundedPrices->price_without_vat|formatPrice}{/if}<small n:if="!$customer->show_with_vat_yn || $customer->vat_removed_yn"> {!_'excl. VAT'}</small>/{if $module->pricesPerUnit->unit_source == 'length'}{$module->info->length_superior_measure_unit_name}{else}{$module->info->superior_measure_unit_name}{/if})</span>
+													{/block}
+												</strong>
+												<abbr n:if="$customer->show_vat_label_yn" class="small" data-toggle="tooltip" title="{_'Price'} {!_'excl. VAT'}<br> {$module->prices->price_without_vat|formatPrice}">{!_'incl. VAT'}</abbr>
+												<strong n:if="isset($product->prices->dual_prices)" class>({$product->prices->dual_prices->price_with_vat_formatted})</strong>
+											{else}
+												<strong class="ws-n fs-6 price-main">
+{include #hwdwjffttd_contentPriceBefore}
+													{$hwdwjffttd_mainPrice|formatPrice}
+{include #hwdwjffttd_contentPricePerUnit}
+												</strong>
+												<small class="text ws-n price-other">{!_'excl. VAT'}{if !$customer->vat_removed_yn && $customer->show_vat_label_yn} ({$module->prices->price_with_vat|formatPrice} {!_'incl. VAT'}){/if}</small>
+												<strong n:if="isset($product->prices->dual_prices)">({$product->prices->dual_prices->price_without_vat_formatted})</strong>
+											{/if}
+										</div>
+										<meta itemprop="priceCurrency" content="{$currency_id}">
+										<meta itemprop="price" content="{$hwdwjffttd_mainPrice}">
+										<meta n:if="!($customer->show_with_vat_yn && !$customer->vat_removed_yn)" itemprop="valueAddedTaxIncluded" content="0">
+										{foreach $module->labels as $label}<meta n:if="$label->type == 'action' && isset($label->active_to) && $label->active_to" itemprop="priceValidUntil" content="{$label->active_to}">{/foreach}
+									{/if}
+								{/block}
+								{block #hwdwjffttd_availabilityMetaContent}
+									{default $show => false}
+									{if $show}
+										{if $module->info->availability_type == 'InStock'}
+											<link itemprop="availability" href="http://schema.org/InStock">
+										{elseif $module->info->availability_type == 'NotAvailable'}
+											<link itemprop="availability" href="http://schema.org/OutOfStock">
+										{else}
+											<link itemprop="availability" href="http://schema.org/LimitedAvailability">
+										{/if}
+									{/if}
+								{/block}
+								{snippetParams pricesAjax1 class => 'pd-prices', itemprop => 'offers', itemscope => true, itemtype => 'http://schema.org/Offer'}
+									{include #hwdwjffttd_pricesContent show => true}
+									{include #hwdwjffttd_availabilityMetaContent show => true}
+								{/snippetParams}
+							@{/if}
+							@{default $manufacturer_link => true}
+							@{default $module_filter => null}
+							@{default $options => null}
+							@{default $module => $product ?? $productInfoBox}
+							@{default $module_info => $module->info ?? null}
+							@{if !$module_filter}
+								@{if isset($module_info->manufacturer_filter_url)}
+									@{var $module_filter $module_info->manufacturer_filter_url}
+								@{elseif isset($module_info->manufacturer_url)}
+									@{var $module_filter $module_info->manufacturer_url}
+								@{/if}
+							@{/if}
+							{if isset($module->addonsCount) && $module->addonsCount}
+								<div class="b bg-wh fs-2 addons">
+									{foreach $module->addons as $addon}
+										+ <a href="#" class="ProductMoreInfo" data-product-id="{$addon->info->product_id}">{$addon->info->title}<small class="ws-n price-small">({if $customer->show_with_vat_yn && !$customer->vat_removed_yn}{$addon->prices->price_with_vat|formatPrice}<abbr n:if="$customer->show_vat_label_yn" data-toggle="tooltip" title="{_'Price'} {!_'excl. VAT'}<br> {$addon->prices->price_without_vat|formatPrice}"> {!_'incl. VAT'}</abbr>{else}{$addon->prices->price_without_vat|formatPrice} {!_'excl. VAT'}{/if})</small></a><br>
+									{/foreach}
+								</div>
+							{/if}
+							@{default $manufacturer_link => true}
+							@{default $module_filter => null}
+							@{default $options => null}
+							@{default $module => $product ?? $productInfoBox}
+							@{default $module_info => $module->info ?? null}
+							@{if !$module_filter}
+								@{if isset($module_info->manufacturer_filter_url)}
+									@{var $module_filter $module_info->manufacturer_filter_url}
+								@{elseif isset($module_info->manufacturer_url)}
+									@{var $module_filter $module_info->manufacturer_url}
+								@{/if}
+							@{/if}
+					@{else}
+						{snippetParams pricesAjax1 class => 'x b bg-wh ta-l bo-t-1 pd-inf-top', itemprop => 'offers', itemscope => true, itemtype => 'http://schema.org/Offer'}
+							<meta n:if="isset($product->labels[2])" itemprop="itemCondition" content="http://schema.org/NewCondition"><meta itemprop="url" content="{link //this}">
+							{var $isDemand false}
+							{if !is_null($product->info->form_id) && !$product->info->can_add_to_basket_yn && $product->prices->price_with_vat == 0}
+								{var $isDemand true}
+								{if !TextFieldsService::_empty('demand-price', $language_id)}<div class="p text mb-all-0 demand-price">{!_'demand-price'}</div>{/if}<!-- Translation "demand-price" -->
+							{/if}
+							{if !$isDemand}
+								{if $product->prices && $show_prices}
+									<div class="row pd-prc">
+										<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Price'}</div>
+										<div class="col-14 col-sm-16 underline">
+											{var $mainPrice null}
+											{var $defaultPrice null}
+											{if $product->info->option_set_exist_yn && $product->minPrices && !isset($product->option_set_id)}
+												{var $product->prices $product->minPrices}
+												<span>{_'from'}</span>
+											{/if}
+											{if $customer->show_with_vat_yn && !$customer->vat_removed_yn}
+												{var $mainPrice $product->prices->price_with_vat}
+												{if isset($product->default_prices)}
+													{var $defaultPrice $product->default_prices->price_with_vat}
+												{/if}
+												<strong class="fs-6">{$mainPrice|formatPrice}</strong>
+												<abbr n:if="$customer->show_vat_label_yn" class="small c-mu" data-toggle="tooltip" title="{_'Price'} {!_'excl. VAT'}<br> {$product->prices->price_without_vat|formatPrice}">{!_'incl. VAT'}</abbr><span n:if="isset($product->prices->dual_prices)"> ({$product->prices->dual_prices->price_with_vat_formatted})</span>
+											{else}
+												{var $mainPrice $product->prices->price_without_vat}
+												{if isset($product->default_prices)}
+													{var $defaultPrice $product->default_prices->price_without_vat}
+												{/if}
+												<strong class="fs-6">{$mainPrice|formatPrice}</strong> <small class="c-mu">{!_'excl. VAT'}{if !$customer->vat_removed_yn && $customer->show_vat_label_yn} ({$product->prices->price_with_vat|formatPrice} {!_'incl. VAT'}){/if}</small><span n:if="isset($product->prices->dual_prices)"> ({$product->prices->dual_prices->price_without_vat_formatted})</span>
+											{/if}
+											<meta itemprop="priceCurrency" content="{$currency_id}">
+											<meta itemprop="price" content="{$mainPrice}">
+											<meta n:if="!($customer->show_with_vat_yn && !$customer->vat_removed_yn)" itemprop="valueAddedTaxIncluded" content="0">
+											<div n:if="$show_price_per_measure_unit_yn && $product->pricesPerUnit && !empty($product->pricesPerUnit->prices) && (!(isset($noVariant) && $noVariant) || !$options)" class="fs-2 c-mu pd-prices-default">
+												{if $customer->show_with_vat_yn}{$product->pricesPerUnit->roundedPrices->price_with_vat|formatPrice}{else}{$product->pricesPerUnit->roundedPrices->price_without_vat|formatPrice}{/if}<small n:if="!$customer->show_with_vat_yn || $customer->vat_removed_yn"> {!_'excl. VAT'}</small>/{if $product->pricesPerUnit->unit_source == 'length'}{$product->info->length_superior_measure_unit_name}{else}{$product->info->superior_measure_unit_name}{/if}
+											</div>
+											{if $defaultPrice && ($defaultPrice != $mainPrice)}
+												{if $show_price_in_default_pricelist_for_logged_in_yn}
+													<div class="pd-prices-default price-unreg">
+														<span class="c-mu fs-2">{_'Unregistered customer'}</span> <strong>{$defaultPrice|formatPrice}<small n:if="!$customer->show_with_vat_yn || $customer->vat_removed_yn" class="c-mu"> {!_'excl. VAT'}</small></strong>
+													</div>
+												{/if}
+											{/if}
+											{if isset($product->addonsCount) && $product->addonsCount}
+												{foreach $product->addons as $addon}
+													<div class="fs-2">+ <span class="a ProductMoreInfo" data-product-id="{$addon->info->product_id}">{$addon->info->title}</span>
+														<span class="small c-mu">({if $customer->show_with_vat_yn && !$customer->vat_removed_yn}{$addon->prices->price_with_vat|formatPrice} <abbr n:if="$customer->show_vat_label_yn" data-toggle="tooltip" title="{_'Price'} {!_'excl. VAT'}<br> {$addon->prices->price_without_vat|formatPrice}"> {!_'incl. VAT'}</abbr>{else}{$addon->prices->price_without_vat|formatPrice} {!_'excl. VAT'}{/if})</span>
+													</div>
+												{/foreach}
+											{/if}
+											{foreach $product->labels as $label}<meta n:if="$label->type == 'action' && isset($label->active_to) && $label->active_to" itemprop="priceValidUntil" content="{$label->active_to}">{/foreach}
+										</div>
+									</div>
+									<hr class="hr mt-2 mb-2">
+								{/if}
+							{/if}
+							{if $show_prices && ($product->roundedPrices->price_with_vat != $product->roundedPrices->original_price_with_vat || $product->roundedPrices->price_with_vat != $product->roundedPrices->common_price_with_vat) && !$isDemand}
+								{if $customer->show_with_vat_yn && !$customer->vat_removed_yn}
+									{if $product->roundedPrices->common_price_with_vat > $product->roundedPrices->price_with_vat && $product->roundedPrices->common_price_with_vat >= $product->roundedPrices->original_price_with_vat}
+										<div class="row pd-pd-prco">
+											<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Standard price'}</div>
+											<div class="col-14 col-sm-16"><strong class="td-lt price-standard">{$product->roundedPrices->common_price_with_vat|formatPrice}</strong> <abbr n:if="$customer->show_vat_label_yn" class="small c-mu" data-toggle="tooltip" title="{_'Price'} {!_'excl. VAT'} = {$product->roundedPrices->common_price_without_vat|formatPrice}">{!_'incl. VAT'}</abbr></div>
+										</div>
+										<hr class="hr mt-2 mb-2">
+									{/if}
+									{if $product->roundedPrices->original_price_with_vat > $product->roundedPrices->price_with_vat && $product->roundedPrices->original_price_with_vat > $product->roundedPrices->common_price_with_vat}
+										<div class="row pd-pd-prco">
+											<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Original price'}</div>
+											<div class="col-14 col-sm-16"><strong class="td-lt price-common">{$product->roundedPrices->original_price_with_vat|formatPrice}</strong> <abbr n:if="$customer->show_vat_label_yn" class="small c-mu" data-toggle="tooltip" title="{_'Price'} {!_'excl. VAT'} = {$product->roundedPrices->original_price_without_vat|formatPrice}">{!_'incl. VAT'}</abbr></div>
+										</div>
+										<hr class="hr mt-2 mb-2">
+									{/if}
+								{else}
+									{if $product->roundedPrices->common_price_without_vat > $product->roundedPrices->price_without_vat && $product->roundedPrices->common_price_without_vat >= $product->roundedPrices->original_price_without_vat}
+										<div class="row pd-pd-prco">
+											<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Standard price'}</div>
+											<div class="col-14 col-sm-16"><strong class="td-lt price-common">{$product->roundedPrices->common_price_without_vat|formatPrice}</strong> <small class="c-mu">{!_'excl. VAT'}</small></div>
+										</div>
+										<hr class="hr mt-2 mb-2">
+									{/if}
+									{if $product->roundedPrices->original_price_without_vat > $product->roundedPrices->price_without_vat && $product->roundedPrices->original_price_without_vat > $product->roundedPrices->common_price_without_vat}
+										<div class="row pd-pd-prco">
+											<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Original price'}</div>
+											<div class="col-14 col-sm-16"><strong class="td-lt price-common">{$product->roundedPrices->original_price_without_vat|formatPrice}</strong> <small class="c-mu">{!_'excl. VAT'}</small></div>
+										</div>
+										<hr class="hr mt-2 mb-2">
+									{/if}
+								{/if}
+							{/if}
+							{if !$isDemand}
+								{if $show_prices && ($product->roundedPrices->common_price_save || $product->roundedPrices->original_price_save)}
+									<div class="row pd-pd-prcs">
+										<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Save2'}</div>
+										<div class="col-14 col-sm-16">
+											{if $customer->show_with_vat_yn && !$customer->vat_removed_yn}
+												{if $product->roundedPrices->common_price_save > $product->roundedPrices->original_price_save}
+													<strong>{$product->prices->common_price_save_percent}&nbsp;%</strong> <small class="c-mu">({$product->roundedPrices->common_price_save|formatPrice}{elseif $product->roundedPrices->common_price_save < $product->roundedPrices->original_price_save}<strong>{$product->prices->original_price_save_percent}&nbsp;%</strong> <small class="c-mu">({$product->roundedPrices->original_price_save|formatPrice}{else}<strong>{$product->prices->original_price_save_percent}&nbsp;%</strong> <small class="c-mu">({$product->roundedPrices->original_price_save|formatPrice}{/if})</small>
+											{else}
+												{if $product->roundedPrices->common_price_save_without_vat > $product->roundedPrices->original_price_save_without_vat}
+													<strong>{$product->prices->common_price_save_percent}&nbsp;%</strong> <small class="c-mu">({$product->roundedPrices->common_price_save_without_vat|formatPrice} {!_'excl. VAT'})</small>
+												{elseif $product->roundedPrices->common_price_save_without_vat < $product->roundedPrices->original_price_save_without_vat}
+													<strong>{$product->prices->original_price_save_percent}&nbsp;%</strong> <small class="c-mu">({$product->roundedPrices->original_price_save_without_vat|formatPrice} {!_'excl. VAT'})</small>
+												{else}
+													<strong>{$product->prices->original_price_save_percent}&nbsp;%</strong> <small class="c-mu">({$product->roundedPrices->original_price_save_without_vat|formatPrice} {!_'excl. VAT'})</small>
+												{/if}
+											{/if}
+										</div>
+									</div>
+									<hr class="hr mt-2 mb-2">
+								{/if}
+							{/if}
+							{if isset($product->info->archived_yn) && $product->info->archived_yn}
+								<div class="row pd-av-a">
+									<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Availability'}</div>
+									<div class="col-14 col-sm-16">
+										<abbr class="icon-text fw-b c-da availabity av-{$product->info->availability_id}"{if $product->info->delivery_days} data-toggle="tooltip" title="{_'Delivery days'} = {$product->info->delivery_days} {_'days', $product->info->delivery_days}"{/if}><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#triangle-exclamation"></use></svg>{$product->info->availability}</abbr>
+									</div>
+								</div><link itemprop="availability" href="http://schema.org/OutOfStock">
+								<hr class="hr mt-2 mb-2">
+							{else}
+								{if $product->info->availability_type == 'InStock'}
+									<link itemprop="availability" href="http://schema.org/InStock">
+								{elseif $product->info->availability_type == 'NotAvailable'}
+									<link itemprop="availability" href="http://schema.org/OutOfStock">
+								{else}
+									<link itemprop="availability" href="http://schema.org/LimitedAvailability">
+								{/if}
+							{/if}
+							{if $product->info->manufacturer}
+								<div class="row pr-2 bo-r-1 pd-mf">
+									<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Manufacturer'}</div>
+									<div class="col-14 col-sm-16">
+										{if $product->info->manufacturer_file_id}
+											<a href="{$product->info->manufacturer_filter_url}">{img $product->info->manufacturer_file_id, max_width => 100, max_height => 30, image_title => $product->info->manufacturer}</a>
+										{else}
+											<a href="{$product->info->manufacturer_filter_url}">{$product->info->manufacturer}</a>
+										{/if}
+									</div>
+								</div>
+								<hr class="hr mt-2 mb-2">
+							{/if}
+							{if $show_weight_yn && $product->info->weight && $product->info->weight > 1}
+								<div class="row pr-2 bo-r-1 pd-wgt">
+									<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Weight'}</div>
+									<div class="col-14 col-sm-16">{!$product->info->weight/1000} kg</div>
+								</div>
+								<hr class="hr mt-2 mb-2">
+							{/if}
+							{if $show_price_per_measure_unit_yn && $product->info->unit_show_measure_quantity_yn && $product->info->unit_measure_quantity && $product->info->measure_unit_name && (!(isset($noVariant) && $noVariant) || !$options)}
+								<div class="row pr-2 bo-r-1 measure">
+									<div class="col-10 col-sm-8 ta-l ai-c d-flex">{_'Package'}</div>
+									<div class="col-14 col-sm-16">{$product->info->unit_measure_quantity} {$product->info->measure_unit_name}</div>
+								</div>
+								<hr class="hr mt-2 mb-2">
+							{/if}
+						{/snippetParams}
+					@{/if}
+					{if isset($product->substitution) && $product->substitution && isset($product->info->archived_yn) && $product->info->archived_yn}
+						{include 'substitution[1].phtml' templateProcessingToken => '45024a722a9f100b24c6c808ceb70cf5'}
+					{/if}
+					{if !(isset($product->info->archived_yn) && $product->info->archived_yn)}
+						{include 'functions[3].phtml' templateProcessingToken => '15690ee49a926da99ac9ed0510e08ae8'}
+					{/if}
+					{include 'help[2].phtml' meta => $product->meta->support}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

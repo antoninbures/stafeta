@@ -1,0 +1,165 @@
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+{default $showRemoveButton => false}
+{default $showLabels => true}
+{default $showRating => true}
+{default $showAvailability => true}
+{default $showPrices => true}
+{default $showAddToCartButton => true}
+{default $showDescription => true}
+{default $showParameters => true}
+{default $isCartGifts => false}
+{default $imgLazy => true}
+{default $imgSmall => false}
+{default $product_image_size_small => 130}
+{default $product_image_size_middle => 190}
+{default $max_width_small => $product_image_size_middle}
+{if $base == 3}
+	{var $max_width_small $product_image_size_small}
+{/if}
+{default $product_image_size_difference => 0}
+{default $product_image_size_normal => (242+$product_image_size_difference)}
+{if $imgSmall}
+	{var $product_image_size_normal $product_image_size_small}
+{elseif isset($templateOptions['cols']) && $templateOptions['cols']}
+	{var $product_image_size_normal (239+$product_image_size_difference)}
+{/if}
+{var $productOnDemand !is_null($product->info->form_id) && !$product->info->can_add_to_basket_yn}
+{var $productCanAddToCart $product->info->can_add_to_basket_yn}
+{var $go_to_detail $product->info->option_set_exist_yn || $productOnDemand || ($product->info->gift_count > 1) || $product->info->length_active}
+<a n:if="$showRemoveButton" href="#" class="btn close ico-sm c-inh mt-n2 mb-1 RemoveProduct NoHref" data-product-id="{$product->info->product_id}" title="{_'Remove product'}" aria-label="{_'Remove product'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#xmark"></use></svg><span class="sr-only">{_'Close'}</span></a>
+<a href="{$product->link}" class="mb-3 jc-c ai-c d-flex p-i-media{if $imgSmall}-sm{/if}">
+	{if $base == 2}
+		{img $product->info->file_id lazy => $imgLazy, max_width => $product_image_size_normal, image_title => $product->info->image_title, title => $product->info->title, class => 'img-thumbnail img-fluid p-i-media-one'}
+	{else}
+		{picture $product->info->file_id lazy => $imgLazy, max_width => $product_image_size_normal, max_width_small => $max_width_small, breakpoint => 576, image_title => $product->info->image_title, title => $product->info->title, class => 'img-thumbnail img-fluid', picture_class => 'p-i-media-one'}
+	{/if}
+	{var $isOtherImages $producst_list_alternative_img_yn}
+	{foreach $product->otherImages as $img}
+		{if ($img->image_id != $product->info->file_id) && ($img->type == 'image') && $isOtherImages}
+			{if $base == 2}
+				{img $img->image_id lazy => $imgLazy, max_width => $product_image_size_normal, image_title => isset($img->image_title) ? $img->image_title : null, title => $product->info->title, class => 'pos-a img-thumbnail img-fluid p-i-media-two'}
+			{else}
+				{picture $img->image_id lazy => $imgLazy, max_width => $product_image_size_normal, max_width_small => $max_width_small, breakpoint => 576, image_title => isset($img->image_title) ? $img->image_title : null, title => $product->info->title, class => 'img-thumbnail img-fluid', picture_class => 'pos-a p-i-media-two'}
+			{/if}
+			{var $isOtherImages false}
+		{/if}
+	{/foreach}
+</a>
+{if $showLabels}
+	{include '../labels[layout_1].phtml' productsItem => true, links => false, labels1_2Class => 'abs bottom-a pe-n'}
+{/if}
+<h4 class="ff-base fs-3 mb-1 p-i-header c-inh"><a href="{$product->link}" class><strong n:if="!$isCartGifts && isset($product->quantity) && $product->quantity > 1">{$product->quantity}x</strong> {$product->info->title}</a></h4>
+{if $showRating && $product->info->productTotalRating}
+	{if $rating_and_reviews_yn}
+		{control rating templateFile => '../rating-control[1].phtml', productId => $product->info->product_id, ratable => false, componentName => $componentName, onlyApproved => true, templateOptions => $templateOptions}
+	{/if}
+{/if}
+{if $showAvailability}
+	<div n:if="$product->info->availability_text" class="availability av-{$product->info->availability_id}" {if $product->info->availability_color} style="color: #{$product->info->availability_color};" {/if}>
+		{$product->info->availability_text}
+		{if $show_stock_quantity_yn}
+			{var $itemStock $stock_from_variants_yn && $product->info->option_set_exist_yn ? $product->info->variants_stock : $product->info->stock}
+			<small class="c-mu fs-2 d-inline-block stock-num">({if $itemStock > 0}{if $itemStock <= $max_show_stock_quantity || !$max_show_stock_quantity}{$itemStock}{else}> {$max_show_stock_quantity}{/if}{else}0{/if} {$product->info->unit_name})</small>
+		{/if}
+	</div>
+{/if}
+{if $showPrices}
+	{if !is_null($product->info->form_id) && !$product->info->can_add_to_basket_yn && $product->prices->price_with_vat == 0}
+		{if !TextFieldsService::_empty('demand-price', $language_id)}
+			<div class="text mb-all-0 p-i-price price-demand">{!_'demand-price'}</div>
+		{/if}<!-- Translation "demand-price" -->
+	{elseif $show_prices}
+		<div class="p-i-price">
+			{if $customer->show_with_vat_yn && !$customer->vat_removed_yn}
+				<strong class="ws-n fs-4 price-main">
+					{block #contentPriceBefore}
+						{if $product->info->option_set_exist_yn && $product->minPrices}
+							{var $product->prices $product->minPrices}
+							<small class="ws-n price-from">{_'from'}</small>
+						{/if}
+					{/block}
+					{$product->prices->price_with_vat|formatPrice}
+				</strong>
+			{else}
+				<strong class="ws-n fs-4 price-main">
+{include #contentPriceBefore}
+					{$product->prices->price_without_vat|formatPrice}
+				</strong>
+				<small class="text c-mu ws-n price-small">{!_'excl. VAT'}</small>
+			{/if}
+			<small n:if="isset($product->prices->dual_prices)">({if $customer->show_with_vat_yn && !$customer->vat_removed_yn}{$product->prices->dual_prices->price_with_vat_formatted}{else}{$product->prices->dual_prices->price_without_vat_formatted}{/if})</small><div class="clearfix"></div>
+			{if $customer->show_with_vat_yn && !$customer->vat_removed_yn}
+				{if $product->prices->original_price_with_vat && $product->prices->common_price_with_vat}
+					<span n:if="$product->prices->price_with_vat < $product->prices->common_price_with_vat && $product->prices->common_price_with_vat >= $product->prices->original_price_with_vat" class="fs-2 td-lt c-mu price-standard" title="{_'Standard price'}">{$product->prices->common_price_with_vat|formatPrice}</span>
+					<span n:if="$product->prices->price_with_vat < $product->prices->original_price_with_vat && $product->prices->original_price_with_vat > $product->prices->common_price_with_vat" class="fs-2 td-lt c-mu price-common" title="{_'Original price'}">{$product->prices->original_price_with_vat|formatPrice}</span>
+				{else}
+					<span n:if="$product->prices->original_price_with_vat && $product->prices->price_with_vat < $product->prices->original_price_with_vat" class="fs-2 td-lt c-mu price-common" title="{_'Original price'}">{$product->prices->original_price_with_vat|formatPrice}</span>
+				{/if}
+			{else}
+				{if $product->prices->original_price_without_vat && $product->prices->common_price_without_vat}
+					<span n:if="$product->prices->price_without_vat < $product->prices->common_price_without_vat && $product->prices->common_price_without_vat >= $product->prices->original_price_without_vat" class="fs-2 td-lt c-mu price-standard" title="{_'Standard price'}">{$product->prices->common_price_without_vat|formatPrice}</span>
+					<span n:if="$product->prices->price_without_vat < $product->prices->original_price_without_vat && $product->prices->original_price_without_vat > $product->prices->common_price_without_vat" class="fs-2 td-lt c-mu price-common" title="{_'Original price'}">{$product->prices->original_price_without_vat|formatPrice}</span>
+				{else}
+					<span n:if="$product->prices->original_price_without_vat && $product->prices->price_without_vat < $product->prices->original_price_without_vat" class="fs-2 td-lt c-mu price-common" title="{_'Original price'}">{$product->prices->original_price_without_vat|formatPrice}</span>
+				{/if}
+			{/if}
+			<span n:if="$show_price_per_measure_unit_yn && $product->pricesPerUnit && !empty($product->pricesPerUnit->prices)" class="small c-mu ws-n price-unit">({if $customer->show_with_vat_yn}{$product->pricesPerUnit->roundedPrices->price_with_vat|formatPrice}{else}{$product->pricesPerUnit->roundedPrices->price_without_vat|formatPrice}{/if}/{if $product->pricesPerUnit->unit_source == 'length'}{$product->info->length_superior_measure_unit_name}{else}{$product->info->superior_measure_unit_name}{/if})</span>
+			{if !$customer->vat_removed_yn && $customer->show_vat_label_yn}
+				<small class="c-mu ws-n d-block price-other">{if $product->info->option_set_exist_yn && $product->minPrices}{_'from'} {/if}{if $customer->show_with_vat_yn}{$product->prices->price_without_vat|formatPrice} {!_'excl. VAT'}{else}{$product->prices->price_with_vat|formatPrice} {!_'incl. VAT'}{/if}</small>
+			{/if}
+		</div>
+	{/if}
+{/if}
+<div class="flex-fill p-i-space-a"></div>
+{if $showAddToCartButton && !$isCartGifts}
+{/if}
+{if $showAddToCartButton}
+	{if $cart_enable && ($productOnDemand || $productCanAddToCart)}
+		{var $attr_href => '#'}
+		{var $attr_class => ''}
+		{if $go_to_detail}
+			{var $attr_href => $product->link}
+		{else}
+			{var $attr_class => $attr_class.'btn-unload NoHref AddProductToCart'}
+		{/if}
+		{var $attr_title => ''}
+		{if $productOnDemand}
+			{var $attr_title => 'Demand'}
+		{elseif $productCanAddToCart}
+			{if !$product->in_cart_yn}
+				{var $attr_title => 'Add to Cart'}
+			{else}
+				{var $attr_title => 'In the Cart'}
+			{/if}
+		{/if}
+		{if !$product->in_cart_yn}
+			<a href="{$attr_href}" class="btn fg bg-se bov-wh-o-20 bgr-l1 sh-sm ca-c btn-to-cart {$attr_class} mt-2" title="{_$attr_title}" role="button">
+				{block #contentButton}
+					{if $productOnDemand}{_'Demand'}{elseif $productCanAddToCart}{if !$product->in_cart_yn}<svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#cart-shopping"></use></svg><span>{_'Add to Cart'}</span>{else}<svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#cart-shopping"></use></svg><span>{_'In the Cart'}</span>{/if}{/if}
+				{/block}
+			</a>
+		{else}
+			<a href="{$attr_href}" class="btn fg bg-su bov-wh-o-20 bgr-l1 sh-sm ca-c btn-in-cart {$attr_class} mt-2" title="{_$attr_title}" role="button">{include #contentButton}</a>
+		{/if}
+	{/if}
+{/if}
+{if $isCartGifts}
+	{if (isset($product->unlocked_when_turnover) && $product->unlocked_when_turnover) && !$product->unlocked_yn}
+		<strong class="btn n-hover fg bg-de ws-n ca-c btn-gift btn-no-cart mt-2">{_'Purchase from'} {$product->unlocked_when_turnover|formatPrice}</strong>
+	{else}
+		{if isset($product->selected_yn) && $product->selected_yn}
+			<a href="#" class="btn fg bg-su bov-wh-o-20 bgr-l1 sh-sm ca-c btn-gift btn-in-cart NoScroll ChooseCartGift mt-1" role="button" data-status="1" {if isset($product->carts_gifts_setting_id)} data-carts_gifts_setting_id="{$product->carts_gifts_setting_id}" {/if}><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#check"></use></svg>{_'Chosen'}</a>
+		{else}
+			<a href="#" class="btn fg bg-se bov-wh-o-20 bgr-l1 sh-sm ca-c btn-gift btn-to-cart NoScroll ChooseCartGift mt-1" role="button" data-status="0" {if isset($product->carts_gifts_setting_id)} data-carts_gifts_setting_id="{$product->carts_gifts_setting_id}" {/if}><i class="fa fa-plus"></i> {_'Choose'}</a>
+		{/if}
+	{/if}
+{/if}
+{if $showParameters}
+{/if}
+{if $showDescription}
+{/if}
+<div class="flex-fill d-none p-i-space"></div>

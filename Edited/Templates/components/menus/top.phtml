@@ -1,0 +1,120 @@
+
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+{default $last_top_category => false}
+{default $top_category_number => 0}
+{default $top_categories_count => 0}
+{foreach $tree as $category}
+	{if $category->parent_id == 1}
+		{var $top_categories_count $top_categories_count+1}
+	{/if}
+{/foreach}
+{default $max_level => 3}
+{if $maxLevelsCount}
+	{var $max_level $maxLevelsCount}
+{/if}
+{block #desktopMenu}
+	{var $next_max 5}
+	{var $next_counter 0}
+	{if count($tree)}
+		{var $next_count count($tree)}
+		{if $level == 1}
+			<ul class="navbar-nav navbar-menu top-menu Menu ReOpenMenu DelayedView SubmenuFromTop PriorNav">
+				{block #content}
+					{foreach $tree as $category}
+						{var $itemClass 'TM'}
+						{var $menuClass ''}
+						{if $category->open}
+							{var $itemClass $itemClass.' open'}
+						{/if}
+						{if $category->active}
+							{var $itemClass $itemClass.' active'}
+						{/if}
+						{var $itemAttr 'aria-haspopup="true" aria-expanded="false"'}
+						{if $category->blank_yn}
+							{var $itemAttr $itemAttr.' target="_blank" rel="noopener"'}
+						{/if}
+						{if $level == 1}
+							{var $menuClass 'PriorItem TopMenu2'}
+							{if count($category->childs)}
+								{var $itemClass $itemClass.' dropdown-toggle'}
+							{/if}
+							{if $category->parent_id == 1 && !$top_into_left_yn}
+								{if $top_menu_disabled_mobile}
+									{var $menuClass $menuClass.' ct-hide-1'}
+								{/if}
+								{var $top_category_number $top_category_number+1}
+								{if $top_categories_count == $top_category_number}
+									{var $last_top_category true}
+								{/if}
+							{/if}
+							{if $category->parent_id == 2 && !$left_into_top_yn}
+								{if $left_menu_disabled_mobile}
+									{var $menuClass $menuClass.' ct-hide-2'}
+								{else}
+									{var $menuClass $menuClass.' ct-hide-3'}
+								{/if}
+								{var $last_top_category false}
+							{/if}
+							{if $category->parent_id == 2 && $left_into_top_yn && $iterator->isLast()}
+								{var $last_top_category true}
+							{/if}
+							{if $iterator->isFirst()}
+								{var $firstCatMenu $category->parent_id}
+							{elseif $category->parent_id != $firstCatMenu && !($top_menu_disabled_mobile || $left_menu_disabled_mobile)}
+								<li class="mb-3 d-xl-none t-m-divider PriorItemLast"></li>
+								{var $firstCatMenu $category->parent_id}
+							{/if}
+						{/if}
+						{if $level == 1}
+							<li class="{$menuClass} nav-item {$menuClass} t-m-{$category->target_category_id}" data-target-category="{$category->category_id}">
+								<a href="{$category->url}" id="ct_{$category->category_id}" class="nav-link navbar-toggler fw-b {$itemClass}" {!$itemAttr}>{$category->name}{block #contentItem1}<span n:if="$category->active" class="sr-only">({_'current'})</span>{/block}{if count($category->childs)}<svg class="ic ic-sm caret d-none d-xl-inline-block" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#angle-down"></use></svg>{/if}</a>
+								{block #contentItem2}
+									{if $level < $max_level}
+										{if count($category->childs)}
+											<a href="#" class="lgi lgi-arrow abs bottom-a left-a rotate-n d-xl-none ScLink"><svg class="ic ic-sm" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#angle-down"></use></svg></a>
+										{/if}
+										{include #desktopMenu tree => $category->childs, level => $level + 1}
+									{/if}
+								{/block}
+							</li>
+						{elseif $level == 2}
+							<li class="gapx-2 pt-3 pr-3 pb-3 pl-3 bo-b-1 d-flex t-m-sub{if count($category->childs)} dropdown ResetShow{/if} ct-{$category->target_category_id} ai-c" data-target-category="{$category->category_id}">
+								{if $category->image_id}
+									<a class="t-m-img jc-c ai-c d-flex" href="{if $category->url}{$category->url}{else}#{/if}" {if $category->blank_yn} target="_blank" {/if}>{img $category->image_id max_height => 60, max_width => 60, class => 'img-thumbnail', lazy => true, image_title => $category->image_title}</a>
+								{/if}
+								<div class="gapy-1 flex-col d-flex t-m-wrap">
+									<a href="{$category->url}" id="ct_{$category->category_id}" class="dd-i fw-b {$itemClass} t-m-sub-h TM" {!$itemAttr}>{$category->name}{include #contentItem1}</a>
+									{include #contentItem2}
+								</div>
+							</li>
+						{else}
+							{var $next_counter $next_counter+1}
+							<a href="{$category->url}" id="ct_{$category->category_id}" class="dd-i {$itemClass} {if count($category->childs)} ResetShow{/if}{if $next_counter > $next_max} collapse multi-collapse-{$category->parent_id}{/if} ct-{$category->target_category_id}" data-target-category="{$category->category_id} TM"{if $category->blank_yn} target="_blank" rel="noopener"{/if} aria-haspopup="true" aria-expanded="false">{$category->name}<span n:if="$category->active" class="sr-only">({_'current'})</span></a>
+							{if $next_counter == $next_max && $next_count > $next_counter}
+								<a href="#" class="dd-i NextLinkHide NoScroll" data-toggle="collapse" data-target=".multi-collapse-{$category->parent_id}">+ {$next_count - $next_counter} {_'next-number', $next_count - $next_counter}</a>
+							{/if}
+						{/if}
+					{/foreach}
+					{if $level == 1}
+						<li class="nav-item d-none d-xl-list-item pos-r t-m-more PriorBtn hidden">
+							<a id="priorDropdown" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#bars"></use></svg><span class="sr-only">{_'More'}</span></a>
+							<ul class="dropdown-menu dropdown-wh navbar-dropdown-1 roll-left dd-left mt-0 ddRollFixed PriorMenu" aria-labelledby="priorDropdown"></ul>
+						</li>
+					{/if}
+				{/block}
+			</ul>
+		{elseif $level == 2}
+			<ul class="dropdown-menu navbar-dropdown-1 dropdown-wh sh-xxl mt-0 flex-wrap nd-mega t-m-l2 NdMega pt-2 pr-5 pb-2 pl-5 ovx-h ovy-a zin-5 jc-s ra-tl-0 ra-tr-0" aria-labelledby="ct_{$category->category_id}">
+				{include #content}
+			</ul>
+		{else}
+			<div class="fs-2 t-m-ln DivUl" aria-labelledby="ct_{$category->category_id}">
+				{include #content}
+			</div>
+		{/if}
+	{/if}
+{/block}

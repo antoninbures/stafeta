@@ -1,0 +1,34 @@
+
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+<div class="col-sm-12 col-lg-8 col-xl-6">
+	<article class="anim-i anim-fade anim-delay-{=($iterator->counter-1)*200} max-w-sm gapx-3 d-flex flex-col hl-item st-argument-box">
+		{if $headline->icon}
+			<a href="{$attributeHref}" {$attributeTarget} class="anim-i anim-fade-up anim-delay-{=($iterator->counter-1)*200} fg bg-de c-inh flex-shrink-0 ico-lg hl_ico{if !$headline->url} a-no NoScroll{/if}"><span class="sr-only">{$headline->title}</span>
+				{block #content}
+					{if $headline->icon}
+						<i class="fa fa-{$headline->icon}" aria-hidden="true"></i>
+					{elseif $headline->type == "video"}
+						{video $headline->fileId lazy => false, max_width => 64, class => 'img-thumbnail max-w-xs hl-video', controls => false, autoplay => true, muted => true, loop => true, title => $headline->title}
+					{else}
+						{img $headline->fileId lazy => false, max_width => 64, class => 'img-thumbnail img-fluid', image_title => $headline->title}
+					{/if}
+				{/block}
+			</a>
+		{else $headline->fileId}
+			<a href="{$attributeHref}" {$attributeTarget} class="anim-i anim-fade-up anim-delay-{=($iterator->counter-1)*200} flex-shrink-0 hl_ico_img{if !$headline->url} a-no NoScroll{/if}">{include #content}</a>
+		{/if}
+		<div class="gapy-2 jc-c flex-col d-flex">
+			<h2 class="text h-5 ta-l mb-0 hl-heading c-pr">
+				<a n:tag-if="$headline->url" href="{$attributeHref}" {$attributeTarget}>{!$headline->title}
+				</a>
+			</h2>
+			{if $headline->text}
+				<div class="text c-mu fs-2 ta-l lh-md hl-text">{!$headline->text}</div>
+			{/if}
+		</div>
+	</article>
+</div>

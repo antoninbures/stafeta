@@ -1,0 +1,129 @@
+
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+@{default $is_sider_menu => true}
+@{if $locked_for_unregistered_yn && !($templateOptions['col_left_menu_fixed'] || $templateOptions['cols_uni'] || ($isTopMenu && $type != 'order-shipment' && $type != 'order-checkout'))}
+	@{var $is_sider_menu false}
+@{/if}
+<header class="container container-n lrs bic-h the-h-1 header Header MenuOnTop Lazy bg-wh">
+
+<!-- Translation "alert-header" -->
+	{if !TextFieldsService::_empty('alert-header', $language_id) && !($type == 'order-shipment' || $type == 'order-checkout')}
+		<div class="alert alert-wa lr ta-c pt-2 pr-0 pb-2 pl-0 sh-sm fw-b ra-tl-0 ra-tr-0 ra-br-0 ra-bl-0 ft-none hdr-alert">
+			<div class="container cpx cnpx">
+				<div class="max text">{!_'alert-header'}</div>
+			</div>
+		</div>
+	{/if}
+	<div class="navbar navbar-col lrs bic-hmain the-h-2 n-o-t-down ft-xl-none hdr-main MenuOnTop MenuOnTopTarget pb-xl-1 pt-5" role="navigation">
+
+		<div class="container cpx cnpx">
+			<div class="max ai-c d-flex">
+				{include 'logo.phtml', bigger_height => true}
+				@{var $ihgtbxexpz_classUserCart 'dd-left ddRollFixed'}
+				@{var $ihgtbxexpz_logo_h1 false}
+				{block #ihgtbxexpz_contentSearch}
+					{default $show => false}
+					{if $show}
+						{default $search_collapse => false}
+						<span class="input-group-append input-group-append-ico">
+							{if $search_collapse}
+								<a href="#" class="btn fg bg-pr bov-wh-o-20 bgr-l1 sh-sm frmsearchForm-search" title="{_'Search'}" data-url="{link Search:Default phrase => 'placeholder'}"><svg class="ic d-sm-none" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#magnifying-glass"></use></svg><span class="d-none d-sm-inline">{_'Search'}</span></a>
+							{else}
+								<a href="#" class="btn fg bg-cl btn-sm pr-3 pl-3 frmsearchForm-search" title="{_'Search'}" data-url="{link Search:Default phrase => 'placeholder'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#magnifying-glass"></use></svg></a>
+							{/if}
+						</span>
+						<input{if isset($phrase) && $phrase} value="{$phrase}" {/if} class="form-control w-100 pr-6 frmsearchForm-phrase" type="search" name="phrase" placeholder="{if !TextFieldsService::_empty('search-input-text', $language_id)}{_'search-input-text'}{else}{_'Search'}{/if}" aria-label="{_'Search'}" data-products-header="{_'Products'}" data-categories-header="{_'Categories'}" data-articles-header="{_'Articles'}" data-products-url="{link Search:suggest}?type=products&amp;phrase=%QUERY" data-categories-url="{link Search:suggest}?type=categories&amp;phrase=%QUERY" data-articles-url="{link Search:suggest}?type=articles&amp;phrase=%QUERY" data-no_item="{_'No item'}" data-loading="{_'Loading'}" data-show_all="{_'Show all results'}">
+					{/if}
+				{/block}
+				<div class="gap flex-fill d-none d-xl-block hdr-brand-gap"></div>
+				<!-- Translation "textheader-logo" -->
+				{if !TextFieldsService::_empty('textheader-logo', $language_id)}
+					<div class="text mb-all-0 ta-l lh-sm c-mu ml-4 d-none d-lg-block ft-none hdr-logo-text mr-4">{!_'textheader-logo'}</div>
+				{/if}
+				<div class="gap flex-fill nav-h d-xl-none"></div>
+				{if count($languages) > 1 || $countries_show_selection_yn}
+					{include 'languages[layout_2].phtml' templateOptions => $templateOptions}
+				{/if}
+				{* Main Menu *}
+				<nav id="menuCollapse" class="collapse navbar-collapse x-xl bg-wh st-main-menu w-100 mr-2" aria-expanded="false">
+					@{if !$locked_for_unregistered_yn}
+						@{control topLeftMenu templateFile => '../menus/top.phtml', maxLevelsCount => $left_into_top_yn ? 100 : 3, templateOptions => $templateOptions}
+					@{/if}
+					@{if $templateOptions['cols_uni'] && !$locked_for_unregistered_yn}
+						<div class="column col-uni d-xl-none ta-l mt-5 gapy-5">
+							@{include '../../layout/column[2].phtml' isSidebar => true, templateOptions => extend($templateOptions, ['col_left_menu' => false])}
+						</div>
+					@{/if}
+				</nav>
+				{* /Main Menu *}
+				{* User Account *}
+				@{if !$locked_for_unregistered_yn && $allow_yn->customer && $customer->loggedIn}
+					<div class="nav-item dropdown{if $rating_and_reviews_yn && $account_info->productsNotRatedCount} badge-mr{/if} hdr-acc CustomerDropdown mr-2">
+						<a href="#" class="navbar-toggler dropdown-toggle st-icon-button dropdown-toggle{ifCurrent :Customer:*} active{/if}" id="customerDropdown" title="{_'Your account'}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" rel="nofollow">
+							<img src="https://stefeta-beta.t1.cdn-upgates.com/f/f68df846033921-user-account.svg" alt="Košík" height="38">
+							{$customer->firstname|striptags|truncate:1,''}{$customer->surname|striptags|truncate:1,''}
+							<span n:if="($rating_and_reviews_yn && $account_info->productsNotRatedCount)||($watchdog && $watched_count)" class="badge badge-sticker fg bg-de navbar-new accountCount">
+								{$account_info->productsNotRatedCount + $watched_count}
+							</span>
+							{ifCurrent :Customer:*}<span class="sr-only">({_'current'})</span>{/if}
+						</a>
+						@{include 'header-dropdown-account.phtml' templateProcessingToken => 'a8e74a0b2f6ac866820809daf63bbd58'}
+					</div>
+				@{elseif !$locked_for_unregistered_yn && $allow_yn->customer}
+					<div class="nav-item dropdown CustomerDropdown hdr-acc mr-2">
+						<a href="#" id="customerDropdown" class="navbar-toggler dropdown-toggle st-icon-button dropdown-toggle{ifCurrent :Customer:*} active{/if}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" rel="nofollow">
+							<img src="https://stefeta-beta.t1.cdn-upgates.com/f/f68df846033921-user-account.svg" alt="Košík" height="38">
+							{ifCurrent :Customer:*}<span class="sr-only">({_'current'})</span>{/if}
+						</a>
+						@{include 'header-dropdown-account.phtml' templateProcessingToken => '3bf72ab29a9ca65c2212092d631fc6fa'}
+					</div>
+				@{/if}
+				{* /User Account *}
+				{* Basket *}
+				@{if $cart_enable && !$locked_for_unregistered_yn}
+					@{default $snippetNameBasket => 'basketNavbarAjax'}
+					@{default $classUserCartToggle => 'dd-left ddRollFixed'}
+					{snippet $snippetNameBasket}
+						<div id="userCartDropdown2" class="dropdown user-cart-ico">
+							<a href="{link :Order:cart}" class="navbar-toggler dropdown-toggle st-icon-button" title="{_'Go to Cart'}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" rel="nofollow"><img src="https://stefeta-beta.t1.cdn-upgates.com/b/b68df7fbfc4ac8-basket.svg" alt="Košík" height="38"><span class="sr-only">{_'Go to Cart'}</span><span class="badge badge-sticker badge-toggle fg BasketTotalQuantity bg-de" title="{$basketTotalQuantity} {_'items', $basketTotalQuantity}">{$basketTotalQuantity}</span></a>
+							{include 'user-cart.phtml' isIcon => true, classUserCart => $classUserCartToggle, templateOptions => $templateOptions}
+						</div>
+					{/snippet}
+				@{/if}
+				{* /Basket *}
+				{default $is_sider_menu => true}
+				{default $menu_toggle_hide_selected => false}
+				{if $is_sider_menu || !$menu_toggle_hide_selected}
+					{if !$locked_for_unregistered_yn}
+						<a href="#menuCollapse" class="navbar-toggler d-xl-none nt-menu hdr-menu-ico NoScroll" data-toggle="collapse" aria-controls="menuCollapse" aria-expanded="false" aria-label="{_'Open menu'}" rel="nofollow"><svg class="ic fs-4" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#bars"></use></svg><span class="sr-only">{_'Open menu'}</span></a>
+					{/if}
+				{/if}
+			</div>
+		</div>
+		{block #mxitefaqbz_contentSearch}
+			{default $show => false}
+			{if $show}
+				{default $search_collapse => false}
+				<span class="input-group-append input-group-append-ico">
+					{if $search_collapse}
+						<a href="#" class="btn fg bg-pr bov-wh-o-20 bgr-l1 sh-sm frmsearchForm-search" title="{_'Search'}" data-url="{link Search:Default phrase => 'placeholder'}"><svg class="ic d-sm-none" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#magnifying-glass"></use></svg><span class="d-none d-sm-inline">{_'Search'}</span></a>
+					{else}
+						<a href="#" class="btn fg bg-cl btn-sm pr-3 pl-3 frmsearchForm-search" title="{_'Search'}" data-url="{link Search:Default phrase => 'placeholder'}"><svg class="ic" aria-hidden="true"><use href="/images/icons/fa/solid.svg?{$templateOptions['svgVersion']}#magnifying-glass"></use></svg></a>
+					{/if}
+				</span>
+				<input{if isset($phrase) && $phrase} value="{$phrase}" {/if} class="form-control w-100 pr-6 frmsearchForm-phrase" type="search" name="phrase" placeholder="{if !TextFieldsService::_empty('search-input-text', $language_id)}{_'search-input-text'}{else}{_'Search'}{/if}" aria-label="{_'Search'}" data-products-header="{_'Products'}" data-categories-header="{_'Categories'}" data-articles-header="{_'Articles'}" data-products-url="{link Search:suggest}?type=products&amp;phrase=%QUERY" data-categories-url="{link Search:suggest}?type=categories&amp;phrase=%QUERY" data-articles-url="{link Search:suggest}?type=articles&amp;phrase=%QUERY" data-no_item="{_'No item'}" data-loading="{_'Loading'}" data-show_all="{_'Show all results'}">
+			{/if}
+		{/block}
+		{if !$locked_for_unregistered_yn}
+			<div id="searchCollapse" class="collapse container cpx cnpx zin-7 hdr-srch-collapse SearchShow{if !$isTopMenu} top-menu-n{/if}{if $type == 'search'} show{/if} d-xl-none" role="search" aria-expanded="{if $type == 'search'}true{else}false{/if}">
+				<div class="input-group max max-w-md ca-r mt-2 mb-2 mb-xl-4 tt-full hdr-srch frmsearchForm-wrap" role="search">
+					{include #mxitefaqbz_contentSearch, show => true, search_collapse => true}
+				</div>
+			</div>
+		{/if}
+	</div>
+</header>

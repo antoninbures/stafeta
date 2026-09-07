@@ -1,0 +1,39 @@
+
+{*
+ * @copyright  Copyright (c) 2013-2024 EVici webdesign s.r.o.
+ * @doc        https://www.upgates.cz/a/dokumentace-latte
+ * @version    5.0
+*}
+{default $componentName => null}
+{default $product_image_size_difference => 0}
+{default $carouselType => 'card-group'}
+{default $carouselTypeXs => 'one'}
+{default $base => 1}
+{default $classMobile => ""}
+{default $classInner => "mx-reset"}
+{if $templateOptions['structure-products-mobile'] == 1}
+	{var $classMobile ' anim-xs-two'}
+	{var $carouselTypeXs 'two'}
+{elseif $templateOptions['structure-products-mobile'] == 2}
+	{var $base 2}
+	{var $classInner ""}
+{else}
+	{var $base 3}
+{/if}
+{if isset($productCount) && $productCount > 0}
+	{default $classPL => ''}
+	{var $classPL $classPL.' card-group mx-reset p-l-boxes p-l-static p-l-cont'}
+	{if $homepage}
+		{var $classPL $classPL.' p-l-module'}
+	{/if}
+	<div class="fse-n {$classMobile}{$classPL}" data-product-list-type="boxes">
+		{foreach $productList AS $product}
+			{var $delay (($iterator->counter - 1) % 6)*100}
+			<article class="card card-item tile anim-i anim-fade anim-delay-{$delay} x b bg-wh lh-sm lh-sm-lg jc-s p-i i-{$iterator->counter}{if $product->in_cart_yn} in-cart{/if} flex-col" data-product-id="{$product->info->product_id}" data-href="{!$product->link}">
+				{include 'item.phtml', product => $product, iterator => $iterator, product_image_size_difference => $product_image_size_difference, componentName => $componentName, base => $base, max_show_stock_quantity => $max_show_stock_quantity}
+			</article>
+		{/foreach}
+	</div>
+{elseif !$homepage}
+	<div class="no-item">{_'No item'}</div>
+{/if}
